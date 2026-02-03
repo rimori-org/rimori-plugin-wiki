@@ -1,0 +1,20 @@
+name: Production Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: prod-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-workflow:
+    uses: rimori-org/pipeline-templates/.github/workflows/plugin-prod-release.yml@main
+    with:
+      plugin_name: wiki
+    secrets:
+      RIMORI_TOKEN: ${{ secrets.RIMORI_TOKEN }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}

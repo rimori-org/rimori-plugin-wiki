@@ -1,0 +1,27 @@
+name: Weekly Production Release
+
+on:
+  schedule:
+    - cron: '0 10 * * 3' # Every Wednesday at 10:00 UTC
+  workflow_dispatch:
+    branches:
+      - dev
+
+concurrency:
+  group: weekly-release
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  call-workflow:
+    uses: rimori-org/pipeline-templates/.github/workflows/plugin-weekly-release.yml@main
+    with:
+      plugin_name: wiki
+    secrets:
+      RIMORI_TOKEN: ${{ secrets.RIMORI_TOKEN }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}

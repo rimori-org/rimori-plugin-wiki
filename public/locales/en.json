@@ -1,0 +1,67 @@
+{
+  "wiki": {
+    "title": "Wiki",
+    "tabs": {
+      "private": "My Pages",
+      "public": "Public"
+    },
+    "sidebar": {
+      "edit": "Edit page",
+      "addSubpage": "Add subpage"
+    },
+    "tree": {
+      "newPage": "New Page",
+      "newSubpage": "Add subpage",
+      "emptyTree": "No pages yet. Create your first page!",
+      "move": "Move",
+      "delete": "Delete",
+      "publish": "Publish",
+      "unpublish": "Unpublish"
+    },
+    "page": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "published": "Published",
+      "private": "Private",
+      "titlePlaceholder": "Page title",
+      "descriptionPlaceholder": "Short description (optional)",
+      "noPageSelected": "Select a page from the tree or create a new one",
+      "confirmDelete": "Are you sure you want to delete this page? All subpages will also be deleted.",
+      "moveTo": "Move to...",
+      "moveToRoot": "Root (no parent)",
+      "moveConfirm": "Move",
+      "subpages": "Subpages"
+    },
+    "editor": {
+      "newPage": "New Page",
+      "editPage": "Edit Page",
+      "icon": "Icon",
+      "title": "Title",
+      "description": "Description",
+      "content": "Content",
+      "parentPage": "Parent page",
+      "showChildren": "Show subpages list below content",
+      "actionLabel": "Action label",
+      "actionLabelPlaceholder": "e.g. grammar-basics",
+      "actionLabelHint": "Set a label to make this page triggerable by the study plan"
+    },
+    "comments": {
+      "title": "Comments",
+      "placeholder": "Write a comment...",
+      "submit": "Comment",
+      "noComments": "No comments yet",
+      "delete": "Delete"
+    },
+    "notFound": {
+      "title": "404",
+      "message": "Page not found",
+      "returnHome": "Return to Wiki"
+    },
+    "settings": {
+      "title": "Settings"
+    }
+  }
+}
