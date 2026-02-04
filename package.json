@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3012",
+    "dev:worker": "VITE_MINIFY=false vite build --watch --config worker/vite.config.ts",
     "build": "yarn run check && vite build",
+    "build:worker": "vite build --config worker/vite.config.ts",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --quiet",
     "preview": "vite preview",
