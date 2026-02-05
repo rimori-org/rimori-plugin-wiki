@@ -1,13 +1,25 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useTranslation } from '@rimori/react-client';
 import { Markdown } from 'tiptap-markdown';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import StarterKit from '@tiptap/starter-kit';
 import { PiCodeBlock } from 'react-icons/pi';
 import { TbBlockquote } from 'react-icons/tb';
 import { GoListOrdered } from 'react-icons/go';
 import { AiOutlineUnorderedList } from 'react-icons/ai';
 import { EditorProvider, useCurrentEditor } from '@tiptap/react';
-import { LuHeading1, LuHeading2, LuHeading3 } from 'react-icons/lu';
+import { LuClipboardPaste, LuHeading1, LuHeading2, LuHeading3 } from 'react-icons/lu';
 import { FaBold, FaCode, FaItalic, FaParagraph, FaStrikethrough } from 'react-icons/fa';
+import { Level } from '@tiptap/extension-heading';
 
 interface EditorButtonProps {
   action: string;
@@ -16,8 +28,8 @@ interface EditorButtonProps {
   disabled?: boolean;
 }
 
-const EditorButton = ({ action, isActive, label, disabled }: EditorButtonProps) => {
-  const { editor } = useCurrentEditor() as any;
+const EditorButton = ({ action, isActive, label, disabled }: EditorButtonProps): JSX.Element | null => {
+  const { editor } = useCurrentEditor();
 
   if (!editor) {
     return null;
@@ -29,11 +41,17 @@ const EditorButton = ({ action, isActive, label, disabled }: EditorButtonProps) 
       ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground'
       : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground');
 
-  if (action.includes('heading')) {
+  if (action.toLowerCase().includes('heading')) {
     const level = parseInt(action[action.length - 1]);
     return (
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: level }).run()}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .toggleHeading({ level: level as Level })
+            .run()
+        }
         className={baseClass}
       >
         {label}
@@ -52,7 +70,61 @@ const EditorButton = ({ action, isActive, label, disabled }: EditorButtonProps) 
   );
 };
 
-const MenuBar = () => {
+const AppendMarkdownButton = (): JSX.Element | null => {
+  const { editor } = useCurrentEditor();
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState('');
+
+  if (!editor) return null;
+
+  const handleAppend = (): void => {
+    if (!text.trim()) return;
+
+    const currentMarkdown: string = editor.storage.markdown.getMarkdown();
+    const combined = currentMarkdown + '\n\n' + text;
+    editor.commands.setContent(combined);
+    editor.commands.focus('end');
+    setText('');
+    setOpen(false);
+  };
+
+  const baseClass =
+    'w-8 h-8 flex items-center justify-center rounded-md transition-colors duration-150 ' +
+    'text-muted-foreground hover:bg-accent hover:text-accent-foreground';
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)} className={baseClass} title={t('wiki.editor.appendMarkdown')}>
+        <LuClipboardPaste size={'18px'} />
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('wiki.editor.appendMarkdownTitle')}</DialogTitle>
+            <DialogDescription>{t('wiki.editor.appendMarkdownDescription')}</DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={t('wiki.editor.appendMarkdownPlaceholder')}
+            className="min-h-[200px] font-mono text-sm"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              {t('wiki.page.cancel')}
+            </Button>
+            <Button onClick={handleAppend} disabled={!text.trim()}>
+              {t('wiki.editor.appendMarkdownConfirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+const MenuBar = (): JSX.Element | null => {
   const { editor } = useCurrentEditor();
 
   if (!editor) {
@@ -101,6 +173,8 @@ const MenuBar = () => {
         isActive={editor.isActive('blockquote')}
         label={<TbBlockquote size={'24px'} />}
       />
+      <div className="w-px h-5 bg-border mx-0.5" />
+      <AppendMarkdownButton />
     </div>
   );
 };
@@ -128,16 +202,14 @@ interface Props {
   onUpdate?: (content: string) => void;
 }
 
-export const MarkdownEditor = (props: Props) => {
+export const MarkdownEditor = (props: Props): JSX.Element => {
   const initialContentRef = useRef(props.content);
 
   return (
     <div
       className={
         'text-md overflow-hidden rounded-lg ' +
-        (props.editable
-          ? 'border border-border bg-card shadow-sm'
-          : 'bg-transparent') +
+        (props.editable ? 'border border-border bg-card shadow-sm' : 'bg-transparent') +
         ' ' +
         (props.className || '')
       }
