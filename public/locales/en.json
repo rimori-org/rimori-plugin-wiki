@@ -46,7 +46,12 @@
       "showChildren": "Show subpages list below content",
       "actionLabel": "Action label",
       "actionLabelPlaceholder": "e.g. grammar-basics",
-      "actionLabelHint": "Set a label to make this page triggerable by the study plan"
+      "actionLabelHint": "Set a label to make this page triggerable by the study plan",
+      "appendMarkdown": "Append markdown",
+      "appendMarkdownTitle": "Append Markdown",
+      "appendMarkdownDescription": "Paste or type markdown content to append to the editor.",
+      "appendMarkdownPlaceholder": "Paste markdown here...",
+      "appendMarkdownConfirm": "Append"
     },
     "comments": {
       "title": "Comments",

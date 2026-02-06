@@ -1221,24 +1221,26 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.10":
-  version "2.5.12"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.12.tgz#9cb97f01d6f1bd25e5ca4035353ce83404e5720e"
-  integrity sha512-Hk9YqqrH3f1kvYwUp1TVHWIP2WDAptC6goXlxET2MQJOxjuOT5oLPHfsUUMbcNRMp8+a1hkacfjwq4OL3O/MQQ==
+"@rimori/client@^2.5.12":
+  version "2.5.13"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.13.tgz#a51fece73cea3dcd11cb6f8fc1fc2cc403d776b7"
+  integrity sha512-xvuoveBA+19bwIue2WIaVIBFAH8ioch75lp509k3AwDXDbEXEFM+6kAKZuLp7AZy16xx+u+nR9iSNyipbahq5Q==
   dependencies:
     "@supabase/postgrest-js" "^2.87.1"
     dotenv "16.5.0"
     i18next "^25.6.0"
 
-"@rimori/playwright-testing@^0.3.5":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.6.tgz#c25810c1b59df8602a4944f7895165f6c69ba7ee"
-  integrity sha512-ZK5Q35VjH/SZriS/0520qQrashKQK2iGKVaCGhQypkzFAW5lGGkZ10bbDSM9phUr3/V5jOB3Ep1cfdoiWB1dzw==
+"@rimori/playwright-testing@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.7.tgz#2b65224415079b6bc62a05c74b4f7cd635c661ea"
+  integrity sha512-+rm1kaIGjUrp+QSTfWzcjHFzLS7Z6k1uC47PE4frvUArTJtHtr7pIxykXj9aRul03G1q/JX5OuSBGdcLV2T51g==
+  dependencies:
+    dotenv "^16.4.5"
 
-"@rimori/react-client@^0.4.7":
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.7.tgz#f7b605e4e0b5e05c251a97d63c9bcbc4683722c1"
-  integrity sha512-W52m+oI2u6iQ+xuLnMRaTQMtG/eBGqzqfeDggPAZf+Dei5rygIdX25xDheOmHcT5u0XQvYlBGkabFF6UEEsRyQ==
+"@rimori/react-client@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.8.tgz#8845ae24475ea3811cf0a272701938d1e2ad828c"
+  integrity sha512-y/p0ZmS9NE5MNE+zLVwm3a6D3zsTwoknh/50OC7+3v+Ff2Me/aAtDPc1B83yxjZE9XaCcGLiCXvqTGyMKUKALQ==
   dependencies:
     html2canvas "1.4.1"
     react-icons "5.4.0"
@@ -2349,6 +2351,11 @@ dotenv@16.5.0:
   version "16.5.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.5.0.tgz#092b49f25f808f020050051d1ff258e404c78692"
   integrity sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==
+
+dotenv@^16.4.5:
+  version "16.6.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.6.1.tgz#773f0e69527a8315c7285d5ee73c4459d20a8020"
+  integrity sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==
 
 electron-to-chromium@^1.5.263:
   version "1.5.286"
