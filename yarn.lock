@@ -1091,26 +1091,26 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.12":
-  version "2.5.13"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.13.tgz#a51fece73cea3dcd11cb6f8fc1fc2cc403d776b7"
-  integrity sha512-xvuoveBA+19bwIue2WIaVIBFAH8ioch75lp509k3AwDXDbEXEFM+6kAKZuLp7AZy16xx+u+nR9iSNyipbahq5Q==
+"@rimori/client@^2.5.17":
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.17.tgz#76b7095af83981955486507701cb0c15db1b8ac4"
+  integrity sha512-JNmJPJQBeWOPciVVYRJTzWxZb7lcBTSkOZ1++dO1C5Lkqoomk2HcWrTIuiFHH3Qd4wxFn2vLGe1j2//9u21qrw==
   dependencies:
     "@supabase/postgrest-js" "^2.87.1"
     dotenv "16.5.0"
     i18next "^25.6.0"
 
-"@rimori/playwright-testing@^0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.7.tgz#2b65224415079b6bc62a05c74b4f7cd635c661ea"
-  integrity sha512-+rm1kaIGjUrp+QSTfWzcjHFzLS7Z6k1uC47PE4frvUArTJtHtr7pIxykXj9aRul03G1q/JX5OuSBGdcLV2T51g==
+"@rimori/playwright-testing@^0.3.10":
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.10.tgz#2c07435e0b78e4281beef6019460427a0b8ce665"
+  integrity sha512-0yD7QxdVaMWO5qvLoAHLTJj2oBIM43MdEQ6nVA8Y8ZHDxFqZt3GxYxj17EEpbqIxi65VPksRo+Cky8oGuwxjqg==
   dependencies:
     dotenv "^16.4.5"
 
-"@rimori/react-client@^0.4.8":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.8.tgz#8845ae24475ea3811cf0a272701938d1e2ad828c"
-  integrity sha512-y/p0ZmS9NE5MNE+zLVwm3a6D3zsTwoknh/50OC7+3v+Ff2Me/aAtDPc1B83yxjZE9XaCcGLiCXvqTGyMKUKALQ==
+"@rimori/react-client@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.9.tgz#862c721ca8a735d88c29ade5c754e6ca4ba38036"
+  integrity sha512-cXjE5A+ahiYlPEKXR8hYA8cGivkI/cKOj3dbDiWuoEfQvqX8e3QiyqgTa4Jt/rBQGRC0z++D0TC1H6lm3ztndg==
   dependencies:
     html2canvas "1.4.1"
     react-icons "5.4.0"
