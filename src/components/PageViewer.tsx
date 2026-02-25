@@ -1,9 +1,8 @@
-import { Edit, Trash2, Globe, Lock } from 'lucide-react';
-import { useTranslation } from '@rimori/react-client';
 import { WikiPage } from '../types/wiki';
-import { MarkdownEditor } from './MarkdownEditor';
-import { CommentsSection } from './CommentsSection';
 import { Button } from '@/components/ui/button';
+import { CommentsSection } from './CommentsSection';
+import { Edit, Trash2, Globe, Lock } from 'lucide-react';
+import { MarkdownEditor, useTranslation } from '@rimori/react-client';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -74,10 +73,10 @@ export const PageViewer = ({
         <div className="flex-1 min-w-0">
           <h1 className="flex-1 text-4xl font-bold tracking-tight flex items-center gap-3">
             {page.icon && <span className="text-4xl">{page.icon}</span>}
-            {page.title}
+            {t(page.title)}
           </h1>
           {page.description && (
-            <p className="text-muted-foreground mt-2 text-base leading-relaxed">{page.description}</p>
+            <p className="text-muted-foreground mt-2 text-base leading-relaxed">{t(page.description)}</p>
           )}
         </div>
         {isOwner && (
@@ -118,10 +117,10 @@ export const PageViewer = ({
       </div>
 
       <div className="flex-1 px-1">
-        <MarkdownEditor key={page.id} content={page.content || ''} editable={false} className="min-h-[200px]" />
+        <MarkdownEditor key={page.id} content={t(page.content || '')} editable={false} className="min-h-[200px]" />
       </div>
 
-      {page.show_children && children.length > 0 && (
+      {children.length > 0 && (
         <div className="mt-6 pt-4">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
             {t('wiki.page.subpages')}

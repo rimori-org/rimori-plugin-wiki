@@ -19,7 +19,7 @@ export const pages: DbTableDefinition = {
       nullable: false,
     },
     content: {
-      type: 'text',
+      type: 'markdown',
       description: 'Markdown content of the page',
       nullable: true,
     },
@@ -54,6 +54,7 @@ export const pages: DbTableDefinition = {
       description: 'Whether to display a list of child pages below the content',
       nullable: true,
       default_value: false,
+      deprecated: true,
     },
     action_label: {
       type: 'text',

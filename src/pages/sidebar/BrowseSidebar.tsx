@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRimori, useTranslation } from '@rimori/react-client';
+import { MarkdownEditor, useRimori, useTranslation } from '@rimori/react-client';
 import { WikiPage } from '../../types/wiki';
 import { Globe, Lock, ChevronRight, ChevronDown, Pencil, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MarkdownEditor } from '../../components/MarkdownEditor';
 
 type SidebarMode = 'view' | 'edit' | 'add';
 
@@ -196,7 +195,6 @@ export default function BrowseSidebar() {
         content: editContentRef.current,
         parent_id: editParentId,
         sort_order: maxSort + 1,
-        show_children: false,
         action_label: null,
         guild_id: activeTab === 'private' ? guildId : null,
       };

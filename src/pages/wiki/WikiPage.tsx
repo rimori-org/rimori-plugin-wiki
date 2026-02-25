@@ -92,7 +92,6 @@ export default function WikiPage() {
       description: string;
       icon: string;
       parent_id: string | null;
-      show_children: boolean;
       action_label: string | null;
       guild_id?: string;
     }) => {
@@ -191,6 +190,7 @@ export default function WikiPage() {
         <div className="flex-1 min-w-0">
           {editing ? (
             <PageEditor
+              key={editingPage?.id ?? `new-${newPageParentId ?? 'root'}`}
               page={editingPage}
               allPages={pages}
               initialParentId={newPageParentId}

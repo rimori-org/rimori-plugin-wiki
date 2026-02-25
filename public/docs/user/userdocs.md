@@ -5,6 +5,7 @@
 Click **"New Page"** at the top of the tree sidebar to create a root-level page. To create a subpage, right-click an existing page and select **"Add subpage"**.
 
 Each page has:
+
 - **Icon** - An emoji or ASCII character displayed in the tree (e.g. 📖, ⚙, ★)
 - **Title** - The page name shown in the tree and as a heading
 - **Description** - An optional subtitle shown below the title
@@ -27,7 +28,6 @@ Pages are arranged in a tree structure. You can:
 
 - **Move a page** - Right-click a page and select "Move", or use the parent page dropdown in the editor
 - **Reorder** - Set the sort order in the editor to control the position among siblings
-- **Show subpages** - Toggle "Show subpages list below content" in the editor to display a list of child pages at the bottom of the page
 
 The **breadcrumb trail** at the top of each page shows the full path from root to the current page. Click any breadcrumb to navigate up.
 
@@ -36,6 +36,7 @@ The **breadcrumb trail** at the top of each page shows the full path from root t
 All pages you create start as **private** - only you can see them. They are stored in your personal guild.
 
 To **publish** a page (make it public):
+
 - Right-click the page in the tree and select "Publish"
 - Or click the globe/lock icon on the page viewer
 
@@ -68,5 +69,4 @@ Pages can be tagged with an **action label** in the editor. This makes the page 
 
 - Use the tree context menu (right-click) for quick actions: add subpage, move, delete, publish/unpublish
 - Assign meaningful icons to top-level pages for easier visual scanning
-- Enable "Show subpages" on index/overview pages to help readers discover related content
 - Page content is automatically translated using the platform's translation system

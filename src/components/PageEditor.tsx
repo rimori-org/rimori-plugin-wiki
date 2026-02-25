@@ -1,11 +1,9 @@
 import { useState, useRef } from 'react';
-import { useTranslation } from '@rimori/react-client';
+import { MarkdownEditor, useTranslation } from '@rimori/react-client';
 import { WikiPage } from '../types/wiki';
-import { MarkdownEditor } from './MarkdownEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface PageEditorProps {
@@ -18,7 +16,6 @@ interface PageEditorProps {
     description: string;
     icon: string;
     parent_id: string | null;
-    show_children: boolean;
     action_label: string | null;
   }) => void;
   onCancel: () => void;
@@ -31,20 +28,19 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
   const [icon, setIcon] = useState(page?.icon || '');
   const contentRef = useRef(page?.content || '');
   const [parentId, setParentId] = useState<string | null>(page?.parent_id ?? initialParentId ?? null);
-  const [showChildren, setShowChildren] = useState(page?.show_children || false);
   const [actionLabel, setActionLabel] = useState(page?.action_label || '');
 
   const availableParents = allPages.filter((p) => p.id !== page?.id);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) return;
+    const content = contentRef.current;
     onSave({
       title: title.trim(),
-      content: contentRef.current,
+      content,
       description: description.trim(),
       icon: icon.trim(),
       parent_id: parentId,
-      show_children: showChildren,
       action_label: actionLabel.trim() || null,
     });
   };
@@ -157,33 +153,26 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
           </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
-          <Switch checked={showChildren} onCheckedChange={setShowChildren} id="show-children" />
-          <Label htmlFor="show-children" className="text-sm cursor-pointer">
-            {t('wiki.editor.showChildren')}
+        <div className="flex-1 min-h-[300px] mb-6">
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
+            {t('wiki.editor.content')}
           </Label>
+          <MarkdownEditor
+            content={contentRef.current}
+            editable={true}
+            onUpdate={(val) => {
+              contentRef.current = val;
+            }}
+            className="min-h-[300px]"
+          />
         </div>
       </div>
 
-      <div className="flex-1 minddddd-h-[300px] mb-6">
-        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
-          {t('wiki.editor.content')}
-        </Label>
-        <MarkdownEditor
-          content={contentRef.current}
-          editable={true}
-          onUpdate={(val) => {
-            contentRef.current = val;
-          }}
-          className="min-h-[300px]"
-        />
-      </div>
-
-      <div className="flex justify-center gap-3">
-        <Button variant="outline" onClick={onCancel} className="px-6">
+      <div className="flex justify-center shrink-0 gap-3 w-1/2 mx-auto max-w-lg flex-wrap">
+        <Button variant="outline" onClick={onCancel} className="px-6 flex-1">
           {t('wiki.page.cancel')}
         </Button>
-        <Button onClick={handleSave} disabled={!title.trim()} className="px-6">
+        <Button onClick={() => void handleSave()} disabled={!title.trim()} className="px-6 flex-1">
           {t('wiki.page.save')}
         </Button>
       </div>
