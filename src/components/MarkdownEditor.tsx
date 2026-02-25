@@ -70,7 +70,7 @@ const EditorButton = ({ action, isActive, label, disabled }: EditorButtonProps):
   );
 };
 
-const AppendMarkdownButton = (): JSX.Element | null => {
+const AppendMarkdownButton = (props: { onUpdate: (content: string) => void }): JSX.Element | null => {
   const { editor } = useCurrentEditor();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -87,6 +87,7 @@ const AppendMarkdownButton = (): JSX.Element | null => {
     editor.commands.focus('end');
     setText('');
     setOpen(false);
+    props.onUpdate(combined);
   };
 
   const baseClass =
@@ -124,7 +125,7 @@ const AppendMarkdownButton = (): JSX.Element | null => {
   );
 };
 
-const MenuBar = (): JSX.Element | null => {
+const MenuBar = (props: { onUpdate: (content: string) => void }): JSX.Element | null => {
   const { editor } = useCurrentEditor();
 
   if (!editor) {
@@ -174,7 +175,7 @@ const MenuBar = (): JSX.Element | null => {
         label={<TbBlockquote size={'24px'} />}
       />
       <div className="w-px h-5 bg-border mx-0.5" />
-      <AppendMarkdownButton />
+      <AppendMarkdownButton onUpdate={props.onUpdate} />
     </div>
   );
 };
@@ -216,7 +217,7 @@ export const MarkdownEditor = (props: Props): JSX.Element => {
     >
       <EditorProvider
         key={props.editable ? 'editable' : 'readonly'}
-        slotBefore={props.editable ? <MenuBar /> : null}
+        slotBefore={props.editable ? <MenuBar onUpdate={props.onUpdate ?? (() => {})} /> : null}
         extensions={extensions}
         content={initialContentRef.current}
         editable={props.editable}

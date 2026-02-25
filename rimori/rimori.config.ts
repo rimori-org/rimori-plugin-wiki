@@ -3,7 +3,7 @@ import { RimoriPluginConfig } from "@rimori/client";
 const config: RimoriPluginConfig = {
   id: "pl1410555270",
   info: {
-    title: "Rimori Wiki",
+    title: "Wiki",
     description: "A personal and shared wiki for organizing your knowledge. Create pages in a tree structure, write in markdown, and publish pages to share with your community.",
     logo: "logo.png",
 
@@ -23,8 +23,8 @@ const config: RimoriPluginConfig = {
         url: "#/wiki/action",
         show: false,
         root: "community",
-        name: "Wiki Action",
-        description: "Wiki action",
+        name: "Wiki",
+        description: "Showing a wiki page.",
         action: {
           key: "wiki_page",
           parameters: {
