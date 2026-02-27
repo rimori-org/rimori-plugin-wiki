@@ -77,7 +77,7 @@ export default function BrowseSidebar() {
   const [selectedPage, setSelectedPage] = useState<WikiPage | null>(null);
   const [mode, setMode] = useState<SidebarMode>('view');
   const [activeTab, setActiveTab] = useState('private');
-  const [guildId, setGuildId] = useState<string | null>(null);
+  const [guildId, setGuildId] = useState<string | null>(() => plugin.plugin.getGuildInfo().id);
 
   // Edit/Add form state
   const [editTitle, setEditTitle] = useState('');
@@ -362,7 +362,14 @@ export default function BrowseSidebar() {
       <div className="flex items-center justify-between px-2 mb-2 pr-5">
         <h2 className="text-2xl font-semibold">{t('wiki.title')}</h2>
       </div>
-      <Tabs defaultValue="private" className="flex-1 flex flex-col" onValueChange={setActiveTab}>
+      <Tabs
+        defaultValue="private"
+        className="flex-1 flex flex-col"
+        onValueChange={(tab) => {
+          setActiveTab(tab);
+          if (mode === 'add') setEditParentId(null);
+        }}
+      >
         <TabsList className="w-full">
           <TabsTrigger value="private" className="flex-1 gap-1">
             <Lock size={12} /> {t('wiki.tabs.private')}

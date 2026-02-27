@@ -45,6 +45,10 @@ export const PageViewer = ({
   isOwner,
 }: PageViewerProps) => {
   const { t } = useTranslation();
+  const isPrivate = Boolean(page.guild_id);
+  const displayTitle = isPrivate ? page.title : t(page.title);
+  const displayDescription = page.description && (isPrivate ? page.description : t(page.description));
+  const displayContent = isPrivate ? page.content || '' : t(page.content || '');
 
   return (
     <div className="flex flex-col h-full overflow-y-auto p-6">
@@ -73,10 +77,10 @@ export const PageViewer = ({
         <div className="flex-1 min-w-0">
           <h1 className="flex-1 text-4xl font-bold tracking-tight flex items-center gap-3">
             {page.icon && <span className="text-4xl">{page.icon}</span>}
-            {t(page.title)}
+            {displayTitle}
           </h1>
           {page.description && (
-            <p className="text-muted-foreground mt-2 text-base leading-relaxed">{t(page.description)}</p>
+            <p className="text-muted-foreground mt-2 text-base leading-relaxed">{displayDescription}</p>
           )}
         </div>
         {isOwner && (
@@ -117,7 +121,7 @@ export const PageViewer = ({
       </div>
 
       <div className="flex-1 px-1">
-        <MarkdownEditor key={page.id} content={t(page.content || '')} editable={false} className="min-h-[200px]" />
+        <MarkdownEditor key={page.id} content={displayContent} editable={false} className="min-h-[200px]" />
       </div>
 
       {children.length > 0 && (
