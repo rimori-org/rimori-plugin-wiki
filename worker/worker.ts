@@ -3,4 +3,5 @@ import initExercisesListener from './listeners/exercises';
 
 setupWorker('pl1410555270', async (client: RimoriClient) => {
   initExercisesListener(client);
+  await client.plugin.setSettings({ is_inited: true });
 });

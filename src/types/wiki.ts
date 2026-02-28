@@ -6,7 +6,6 @@ export interface WikiPage {
   icon: string | null;
   parent_id: string | null;
   sort_order: number;
-  show_children: boolean;
   action_label: string | null;
   guild_id: string | null;
   created_by: string;

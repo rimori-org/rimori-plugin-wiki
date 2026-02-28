@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRimori, useTranslation } from '@rimori/react-client';
+import { MarkdownEditor, useRimori, useTranslation } from '@rimori/react-client';
 import { WikiPage } from '../../types/wiki';
 import { Globe, Lock, ChevronRight, ChevronDown, Pencil, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MarkdownEditor } from '../../components/MarkdownEditor';
 
 type SidebarMode = 'view' | 'edit' | 'add';
 
@@ -78,7 +77,7 @@ export default function BrowseSidebar() {
   const [selectedPage, setSelectedPage] = useState<WikiPage | null>(null);
   const [mode, setMode] = useState<SidebarMode>('view');
   const [activeTab, setActiveTab] = useState('private');
-  const [guildId, setGuildId] = useState<string | null>(null);
+  const [guildId, setGuildId] = useState<string | null>(() => plugin.plugin.getGuildInfo().id);
 
   // Edit/Add form state
   const [editTitle, setEditTitle] = useState('');
@@ -196,7 +195,6 @@ export default function BrowseSidebar() {
         content: editContentRef.current,
         parent_id: editParentId,
         sort_order: maxSort + 1,
-        show_children: false,
         action_label: null,
         guild_id: activeTab === 'private' ? guildId : null,
       };
@@ -364,7 +362,14 @@ export default function BrowseSidebar() {
       <div className="flex items-center justify-between px-2 mb-2 pr-5">
         <h2 className="text-2xl font-semibold">{t('wiki.title')}</h2>
       </div>
-      <Tabs defaultValue="private" className="flex-1 flex flex-col" onValueChange={setActiveTab}>
+      <Tabs
+        defaultValue="private"
+        className="flex-1 flex flex-col"
+        onValueChange={(tab) => {
+          setActiveTab(tab);
+          if (mode === 'add') setEditParentId(null);
+        }}
+      >
         <TabsList className="w-full">
           <TabsTrigger value="private" className="flex-1 gap-1">
             <Lock size={12} /> {t('wiki.tabs.private')}

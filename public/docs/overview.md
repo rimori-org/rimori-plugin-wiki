@@ -13,7 +13,7 @@ The Wiki plugin lets you create, organize, and browse markdown pages in a tree s
 - **Private and public** - Pages start private; publish them when ready to share
 - **Comments and reactions** - Discuss published pages with emoji reactions
 - **Page icons** - Assign ASCII/emoji icons to pages for quick visual identification
-- **Subpage listings** - Optionally show child pages as a navigable list below content
+- **Subpage listings** - Child pages are shown as a navigable list below content
 - **Sidebar browsing** - Quick access to your private and public pages from the sidebar
 - **Study plan integration** - Tag pages with action labels to make them triggerable exercises
 
