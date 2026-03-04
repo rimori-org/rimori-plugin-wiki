@@ -7,13 +7,13 @@
     },
     "sidebar": {
       "edit": "Edit page",
-      "addSubpage": "Add subpage"
+      "addSubpage": "Add subpage",
+      "selectPage": "Select a page..."
     },
     "tree": {
       "newPage": "New Page",
       "newSubpage": "Add subpage",
-      "emptyTree": "No pages yet. Create your first page!",
-      "move": "Move",
+"move": "Move",
       "delete": "Delete",
       "publish": "Publish",
       "unpublish": "Unpublish"
