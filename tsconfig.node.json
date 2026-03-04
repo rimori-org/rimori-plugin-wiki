@@ -21,5 +21,6 @@
   "include": [
     "vite.config.ts",
     "worker"
-  ]
+  ],
+  "exclude": ["node_modules", "dist", "build", ".turbo", "test-results", "playwright-report"]
 }

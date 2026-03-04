@@ -29,7 +29,6 @@
       ]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "build", ".turbo", "test-results", "playwright-report"]
 }
