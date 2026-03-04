@@ -6,8 +6,9 @@ export interface WikiPage {
   icon: string | null;
   parent_id: string | null;
   sort_order: number;
-  action_label: string | null;
   guild_id: string | null;
+  min_skill_level: string | null;
+  skill_level_type: string | null;
   created_by: string;
   created_at: string;
 }

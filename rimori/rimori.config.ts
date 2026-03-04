@@ -39,7 +39,7 @@ const config: RimoriPluginConfig = {
     sidebar: [
       {
         id: "browse",
-        url: "#/sidebar/browse",
+        url: "#/wiki",
         name: "Wiki",
         icon: "logo.png",
         description: "Browse wiki pages",

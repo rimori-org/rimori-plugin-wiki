@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRimori } from '@rimori/react-client';
+import { compareLanguageLevels, LanguageLevel, UserInfo } from '@rimori/client';
 import { WikiPage, TreeNode } from '../types/wiki';
 
 function buildTree(pages: WikiPage[], expandedIds: Set<string>): TreeNode[] {
@@ -34,6 +35,15 @@ function getAncestorIds(pages: WikiPage[], pageId: string): string[] {
   return ancestors;
 }
 
+const SKILL_TYPE_KEY_MAP: Record<string, keyof UserInfo> = {
+  reading: 'skill_level_reading',
+  writing: 'skill_level_writing',
+  grammar: 'skill_level_grammar',
+  speaking: 'skill_level_speaking',
+  listening: 'skill_level_listening',
+  understanding: 'skill_level_understanding',
+};
+
 export function useWikiPages(mode: 'private' | 'public') {
   const plugin = useRimori();
   const [pages, setPages] = useState<WikiPage[]>([]);
@@ -52,10 +62,25 @@ export function useWikiPages(mode: 'private' | 'public') {
     }
     const { data, error } = await query.order('sort_order', { ascending: true });
     if (!error && data) {
-      setPages(data as WikiPage[]);
+      let fetchedPages = data as WikiPage[];
+
+      // Filter public pages by skill level requirement
+      if (mode === 'public') {
+        const userInfo = plugin.plugin.getUserInfo();
+        fetchedPages = fetchedPages.filter((page) => {
+          if (!page.skill_level_type || !page.min_skill_level) return true;
+          const userKey = SKILL_TYPE_KEY_MAP[page.skill_level_type];
+          if (!userKey) return true;
+          const userLevel = userInfo[userKey] as LanguageLevel;
+          if (!userLevel) return true;
+          return compareLanguageLevels(userLevel, page.min_skill_level as LanguageLevel) >= 0;
+        });
+      }
+
+      setPages(fetchedPages);
     }
     setLoading(false);
-  }, [plugin.db, mode]);
+  }, [plugin.db, plugin.plugin, mode]);
 
   useEffect(() => {
     fetchPages();

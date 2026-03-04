@@ -5,6 +5,33 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Globe, Lock, Trash2 } from 'lucide-react';
+
+const LANGUAGE_LEVELS = ['Pre-A1', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Post-C2'] as const;
+const SKILL_TYPES = ['reading', 'writing', 'grammar', 'speaking', 'listening', 'understanding'] as const;
+
+function getPagesInTreeOrder(pages: WikiPage[]): { page: WikiPage; depth: number }[] {
+  const result: { page: WikiPage; depth: number }[] = [];
+  function traverse(page: WikiPage, depth: number) {
+    result.push({ page, depth });
+    const children = pages.filter((p) => p.parent_id === page.id).sort((a, b) => a.sort_order - b.sort_order);
+    children.forEach((c) => traverse(c, depth + 1));
+  }
+  const roots = pages.filter((p) => !p.parent_id).sort((a, b) => a.sort_order - b.sort_order);
+  roots.forEach((r) => traverse(r, 0));
+  return result;
+}
 
 interface PageEditorProps {
   page: WikiPage | null;
@@ -16,32 +43,47 @@ interface PageEditorProps {
     description: string;
     icon: string;
     parent_id: string | null;
-    action_label: string | null;
+    min_skill_level: string | null;
+    skill_level_type: string | null;
   }) => void;
   onCancel: () => void;
+  onTogglePublish?: () => void;
+  onDelete?: () => void;
+  isPublic?: boolean;
 }
 
-export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }: PageEditorProps) => {
+export const PageEditor = ({
+  page,
+  allPages,
+  initialParentId,
+  onSave,
+  onCancel,
+  onTogglePublish,
+  onDelete,
+  isPublic,
+}: PageEditorProps) => {
   const { t } = useTranslation();
   const [title, setTitle] = useState(page?.title || '');
   const [description, setDescription] = useState(page?.description || '');
   const [icon, setIcon] = useState(page?.icon || '');
   const contentRef = useRef(page?.content || '');
   const [parentId, setParentId] = useState<string | null>(page?.parent_id ?? initialParentId ?? null);
-  const [actionLabel, setActionLabel] = useState(page?.action_label || '');
+  const [skillLevelType, setSkillLevelType] = useState<string>(page?.skill_level_type || '');
+  const [minSkillLevel, setMinSkillLevel] = useState<string>(page?.min_skill_level || '');
 
   const availableParents = allPages.filter((p) => p.id !== page?.id);
+  const orderedParents = getPagesInTreeOrder(availableParents);
 
   const handleSave = async () => {
     if (!title.trim()) return;
-    const content = contentRef.current;
     onSave({
       title: title.trim(),
-      content,
+      content: contentRef.current,
       description: description.trim(),
       icon: icon.trim(),
       parent_id: parentId,
-      action_label: actionLabel.trim() || null,
+      min_skill_level: skillLevelType && minSkillLevel ? minSkillLevel : null,
+      skill_level_type: skillLevelType || null,
     });
   };
 
@@ -65,26 +107,8 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
               </SelectTrigger>
               <SelectContent className="max-h-60">
                 {[
-                  '📄',
-                  '📚',
-                  '📖',
-                  '📝',
-                  '✏️',
-                  '🔬',
-                  '🧪',
-                  '🧠',
-                  '💡',
-                  '🎓',
-                  '🌍',
-                  '📊',
-                  '📈',
-                  '🔧',
-                  '⚙️',
-                  '🎨',
-                  '🎵',
-                  '📐',
-                  '🔑',
-                  '⭐',
+                  '📄', '📚', '📖', '📝', '✏️', '🔬', '🧪', '🧠', '💡', '🎓',
+                  '🌍', '📊', '📈', '🔧', '⚙️', '🎨', '🎵', '📐', '🔑', '⭐',
                 ].map((emoji) => (
                   <SelectItem key={emoji} value={emoji} className="text-xl text-center">
                     {emoji}
@@ -98,6 +122,7 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
               {t('wiki.editor.title')}
             </Label>
             <Input
+              autoFocus
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('wiki.page.titlePlaceholder')}
@@ -129,8 +154,8 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
-                {availableParents.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
+                {orderedParents.map(({ page: p, depth }) => (
+                  <SelectItem key={p.id} value={p.id} style={{ paddingLeft: `${32 + depth * 16}px` }}>
                     {p.icon && `${p.icon} `}
                     {p.title}
                   </SelectItem>
@@ -141,17 +166,55 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
 
           <div>
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {t('wiki.editor.actionLabel')}
+              {t('wiki.editor.skillLevelType')}
             </Label>
-            <Input
-              value={actionLabel}
-              onChange={(e) => setActionLabel(e.target.value)}
-              placeholder={t('wiki.editor.actionLabelPlaceholder')}
-              className="mt-1.5"
-            />
-            <p className="text-xs text-muted-foreground mt-1">{t('wiki.editor.actionLabelHint')}</p>
+            <Select
+              value={skillLevelType || '__none__'}
+              onValueChange={(v) => {
+                setSkillLevelType(v === '__none__' ? '' : v);
+                if (v === '__none__') setMinSkillLevel('');
+              }}
+            >
+              <SelectTrigger className="mt-1.5">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">{t('wiki.editor.skillLevelTypeNone')}</SelectItem>
+                {SKILL_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {t(`wiki.editor.skill_${type}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        {skillLevelType && (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {t('wiki.editor.minSkillLevel')}
+              </Label>
+              <Select
+                value={minSkillLevel || '__none__'}
+                onValueChange={(v) => setMinSkillLevel(v === '__none__' ? '' : v)}
+              >
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">{t('wiki.editor.minSkillLevelNone')}</SelectItem>
+                  {LANGUAGE_LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 min-h-[300px] mb-6">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
@@ -168,13 +231,45 @@ export const PageEditor = ({ page, allPages, initialParentId, onSave, onCancel }
         </div>
       </div>
 
-      <div className="flex justify-center shrink-0 gap-3 w-1/2 mx-auto max-w-lg flex-wrap">
-        <Button variant="outline" onClick={onCancel} className="px-6 flex-1">
-          {t('wiki.page.cancel')}
-        </Button>
-        <Button onClick={() => void handleSave()} disabled={!title.trim()} className="px-6 flex-1">
-          {t('wiki.page.save')}
-        </Button>
+      <div className="flex justify-between items-center shrink-0 gap-3">
+        {page && (onTogglePublish || onDelete) && (
+          <div className="flex gap-2">
+            {onTogglePublish && (
+              <Button variant="outline" onClick={onTogglePublish} className="px-3">
+                {isPublic ? <Lock size={15} /> : <Globe size={15} />}
+                {isPublic ? t('wiki.page.unpublish') : t('wiki.page.publish')}
+              </Button>
+            )}
+            {onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="px-3 text-destructive hover:text-destructive">
+                    <Trash2 size={15} />
+                    {t('wiki.page.delete')}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t('wiki.page.delete')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('wiki.page.confirmDelete')}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t('wiki.page.cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDelete}>{t('wiki.page.delete')}</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
+        )}
+        <div className="flex gap-3 ml-auto">
+          <Button variant="outline" onClick={onCancel} className="px-6">
+            {t('wiki.page.cancel')}
+          </Button>
+          <Button onClick={() => void handleSave()} disabled={!title.trim()} className="px-6">
+            {t('wiki.page.save')}
+          </Button>
+        </div>
       </div>
     </div>
   );
