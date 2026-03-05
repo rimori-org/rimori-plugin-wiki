@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { MarkdownEditor, useRimori, useTranslation } from '@rimori/react-client';
 import { WikiPage } from '../../types/wiki';
-import { Globe, Lock, ChevronRight, ChevronDown, Pencil, Plus } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Globe, Lock, Pencil, Plus } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,61 +10,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 type SidebarMode = 'view' | 'edit' | 'add';
 
-interface SidebarTreeNodeProps {
-  page: WikiPage;
-  allPages: WikiPage[];
-  expandedIds: Set<string>;
-  selectedId: string | null;
-  onToggle: (id: string) => void;
-  onNavigate: (pageId: string) => void;
-}
+function getPagesInTreeOrder(pages: WikiPage[]): { page: WikiPage; depth: number }[] {
+  const result: { page: WikiPage; depth: number }[] = [];
 
-function SidebarTreeNode({ page, allPages, expandedIds, selectedId, onToggle, onNavigate }: SidebarTreeNodeProps) {
-  const children = allPages.filter((p) => p.parent_id === page.id).sort((a, b) => a.sort_order - b.sort_order);
-  const hasChildren = children.length > 0;
-  const isExpanded = expandedIds.has(page.id);
-  const isSelected = selectedId === page.id;
+  function traverse(page: WikiPage, depth: number) {
+    result.push({ page, depth });
+    const children = pages.filter((p) => p.parent_id === page.id).sort((a, b) => a.sort_order - b.sort_order);
+    children.forEach((c) => traverse(c, depth + 1));
+  }
 
-  return (
-    <div>
-      <div
-        className={
-          'flex items-center gap-1 px-2 py-1.5 cursor-pointer rounded text-sm ' +
-          (isSelected ? 'bg-primary/10 text-primary dark:bg-primary/20' : 'hover:bg-gray-100 dark:hover:bg-gray-800')
-        }
-        onClick={() => onNavigate(page.id)}
-      >
-        {hasChildren ? (
-          <button
-            className="w-4 h-4 flex items-center justify-center shrink-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggle(page.id);
-            }}
-          >
-            {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-          </button>
-        ) : (
-          <span className="w-4" />
-        )}
-        <span className="w-4 text-center shrink-0 text-xs">{page.icon || '📄'}</span>
-        <span className="truncate">{page.title}</span>
-      </div>
-      {isExpanded &&
-        children.map((child) => (
-          <div key={child.id} className="pl-3">
-            <SidebarTreeNode
-              page={child}
-              allPages={allPages}
-              expandedIds={expandedIds}
-              selectedId={selectedId}
-              onToggle={onToggle}
-              onNavigate={onNavigate}
-            />
-          </div>
-        ))}
-    </div>
-  );
+  const roots = pages.filter((p) => !p.parent_id).sort((a, b) => a.sort_order - b.sort_order);
+  roots.forEach((r) => traverse(r, 0));
+
+  return result;
 }
 
 export default function BrowseSidebar() {
@@ -73,7 +30,6 @@ export default function BrowseSidebar() {
   const { t } = useTranslation();
   const [privatePages, setPrivatePages] = useState<WikiPage[]>([]);
   const [publicPages, setPublicPages] = useState<WikiPage[]>([]);
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [selectedPage, setSelectedPage] = useState<WikiPage | null>(null);
   const [mode, setMode] = useState<SidebarMode>('view');
   const [activeTab, setActiveTab] = useState('private');
@@ -94,7 +50,6 @@ export default function BrowseSidebar() {
   }, [plugin.plugin]);
 
   const fetchPages = useCallback(async () => {
-    // Private pages have guild_id set (scoped to user's personal guild)
     const { data: privData } = await plugin.db
       .from('pages')
       .select('*')
@@ -102,7 +57,6 @@ export default function BrowseSidebar() {
       .order('sort_order', { ascending: true });
     if (privData) setPrivatePages(privData as WikiPage[]);
 
-    // Public pages have guild_id = null (visible to everyone)
     const { data: pubData } = await plugin.db
       .from('pages')
       .select('*')
@@ -114,15 +68,6 @@ export default function BrowseSidebar() {
   useEffect(() => {
     fetchPages();
   }, [fetchPages]);
-
-  const toggleExpanded = useCallback((id: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
 
   const handleSelectPage = useCallback(
     (pageId: string) => {
@@ -185,8 +130,9 @@ export default function BrowseSidebar() {
           : null,
       );
     } else if (mode === 'add') {
-      const currentPages = activeTab === 'private' ? privatePages : publicPages;
-      const maxSort = currentPages.reduce((max, p) => Math.max(max, p.sort_order), 0);
+      const isPrivate = activeTab === 'private';
+      const relevantPages = isPrivate ? privatePages : publicPages;
+      const maxSort = relevantPages.reduce((max, p) => Math.max(max, p.sort_order), 0);
 
       const newPage: Partial<WikiPage> = {
         title: editTitle.trim(),
@@ -196,7 +142,7 @@ export default function BrowseSidebar() {
         parent_id: editParentId,
         sort_order: maxSort + 1,
         action_label: null,
-        guild_id: activeTab === 'private' ? guildId : null,
+        guild_id: isPrivate ? guildId : null,
       };
 
       const { data } = await plugin.db.from('pages').insert(newPage).select('*');
@@ -223,25 +169,9 @@ export default function BrowseSidebar() {
   ]);
 
   const currentTabPages = activeTab === 'private' ? privatePages : publicPages;
-  const availableParents = currentTabPages.filter((p) => (mode === 'edit' ? p.id !== selectedPage?.id : true));
-
-  const renderTree = (pages: WikiPage[]) => {
-    const roots = pages.filter((p) => !p.parent_id);
-    if (roots.length === 0) {
-      return <p className="text-sm text-gray-500 px-3 py-2">{t('wiki.tree.emptyTree')}</p>;
-    }
-    return roots.map((page) => (
-      <SidebarTreeNode
-        key={page.id}
-        page={page}
-        allPages={pages}
-        expandedIds={expandedIds}
-        selectedId={selectedPage?.id || null}
-        onToggle={toggleExpanded}
-        onNavigate={handleSelectPage}
-      />
-    ));
-  };
+  const orderedPages = getPagesInTreeOrder(currentTabPages);
+  const allPages = [...privatePages, ...publicPages];
+  const availableParents = allPages.filter((p) => (mode === 'edit' ? p.id !== selectedPage?.id : true));
 
   const renderEditForm = () => (
     <div className="mt-3 border-t pt-2 flex flex-col gap-2 px-1">
@@ -318,74 +248,67 @@ export default function BrowseSidebar() {
     </div>
   );
 
-  const renderSelectedPage = () => {
-    return (
-      <div className="mt-3 border-t pt-3 flex flex-col gap-2">
-        <div className="flex items-center justify-between pl-1">
-          {selectedPage ? (
-            <h3 className="text-xl font-semibold truncate">
-              {selectedPage.icon && <span className="mr-1">{selectedPage.icon}</span>}
-              {selectedPage.title}
-            </h3>
-          ) : (
-            <span />
-          )}
-          <div className="flex gap-1 shrink-0">
-            {selectedPage && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={startEdit}
-                title={t('wiki.sidebar.edit')}
-              >
-                <Pencil size={14} />
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={startAdd} title={t('wiki.tree.newPage')}>
-              <Plus size={14} />
+  const renderSelectedPage = () => (
+    <div className="pt-3 border-t flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
+      <div className="flex items-center gap-1">
+        <Select value={selectedPage?.id || ''} onValueChange={handleSelectPage}>
+          <SelectTrigger className="flex-1 h-auto items-center text-xl font-semibold border-0 shadow-none px-1 py-0.5 focus:ring-0 focus:ring-offset-0 bg-transparent [&>span]:line-clamp-none [&>span]:text-left [&>span]:whitespace-normal">
+            <SelectValue placeholder={t('wiki.sidebar.selectPage')} />
+          </SelectTrigger>
+          <SelectContent>
+            {orderedPages.map(({ page, depth }) => (
+              <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
+                {page.icon && `${page.icon} `}
+                {page.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="flex gap-1 shrink-0">
+          {selectedPage && (
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={startEdit} title={t('wiki.sidebar.edit')}>
+              <Pencil size={14} />
             </Button>
-          </div>
+          )}
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={startAdd} title={t('wiki.tree.newPage')}>
+            <Plus size={14} />
+          </Button>
         </div>
-        {selectedPage?.description && <p className="text-sm text-muted-foreground px-1">{selectedPage.description}</p>}
-        {selectedPage?.content && (
-          <ScrollArea className="max-h-[300px] px-1">
-            <MarkdownEditor key={selectedPage.id} content={selectedPage.content} editable={false} className="text-sm" />
-          </ScrollArea>
-        )}
       </div>
-    );
-  };
+      {selectedPage?.description && <p className="text-sm text-muted-foreground px-1">{selectedPage.description}</p>}
+      {selectedPage?.content && (
+        <MarkdownEditor
+          key={selectedPage.id}
+          content={selectedPage.content}
+          editable={false}
+          className="text-sm px-1"
+        />
+      )}
+    </div>
+  );
 
   return (
     <div className="flex flex-col h-full p-2">
-      <div className="flex items-center justify-between px-2 mb-2 pr-5">
-        <h2 className="text-2xl font-semibold">{t('wiki.title')}</h2>
-      </div>
       <Tabs
         defaultValue="private"
-        className="flex-1 flex flex-col"
         onValueChange={(tab) => {
           setActiveTab(tab);
+          setSelectedPage(null);
           if (mode === 'add') setEditParentId(null);
         }}
       >
-        <TabsList className="w-full">
-          <TabsTrigger value="private" className="flex-1 gap-1">
-            <Lock size={12} /> {t('wiki.tabs.private')}
-          </TabsTrigger>
-          <TabsTrigger value="public" className="flex-1 gap-1">
-            <Globe size={12} /> {t('wiki.tabs.public')}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="private" className="flex-1">
-          <ScrollArea className="max-h-[200px]">{renderTree(privatePages)}</ScrollArea>
-        </TabsContent>
-        <TabsContent value="public" className="flex-1">
-          <ScrollArea className="max-h-[200px]">{renderTree(publicPages)}</ScrollArea>
-        </TabsContent>
+        <div className="flex items-center justify-between px-2 mb-2 pr-8">
+          <h2 className="text-3xl font-semibold">{t('wiki.title')}</h2>
+          <TabsList >
+            <TabsTrigger value="private" className="gap-1 text-xs px-2">
+              <Lock size={11} /> {t('wiki.tabs.private')}
+            </TabsTrigger>
+            <TabsTrigger value="public" className="gap-1 text-xs px-2">
+              <Globe size={11} /> {t('wiki.tabs.public')}
+            </TabsTrigger>
+          </TabsList>
+        </div>
       </Tabs>
-
       {mode === 'view' && renderSelectedPage()}
       {(mode === 'edit' || mode === 'add') && renderEditForm()}
     </div>
