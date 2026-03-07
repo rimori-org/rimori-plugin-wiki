@@ -45,7 +45,7 @@ const config: RimoriPluginConfig = {
         description: "Browse wiki pages",
       },
     ],
-    settings: "#/settings",
+    // settings: "#/settings",
   },
   documentation: {
     overview_path: 'docs/overview.md',

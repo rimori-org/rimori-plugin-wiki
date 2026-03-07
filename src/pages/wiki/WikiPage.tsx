@@ -238,7 +238,7 @@ export default function WikiPage() {
         <div className="flex flex-col gap-1 px-2 pt-2 pb-1 border-b border-border bg-muted/20 shrink-0">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold">Wiki</h1>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 mr-10">
               <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAddSubpage(null)}>
                 <Plus size={15} />
               </Button>

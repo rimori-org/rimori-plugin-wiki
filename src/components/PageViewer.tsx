@@ -40,14 +40,9 @@ export const PageViewer = ({
   const displayContent = isPrivate ? page.content || '' : t(page.content || '');
 
   return (
-    <div className="relative flex flex-col h-full overflow-y-auto p-4 md:p-6">
+    <div className="relative flex flex-col h-full overflow-y-auto p-2 md:p-3">
       {mobileMode && isOwner && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-2 right-2 h-8 w-8 z-10"
-          onClick={onEdit}
-        >
+        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-8 w-8 z-10" onClick={onEdit}>
           <Edit size={16} />
         </Button>
       )}
@@ -74,23 +69,21 @@ export const PageViewer = ({
       )}
 
       {!mobileMode && (
-        <div className="flex flex-col items-start justify-between mb-3 mr-8">
-          <div className="flex-1 min-w-0">
+        <div className="flex flex-col mb-3 mr-8">
+          <div className="flex items-center justify-between">
             <h1 className="flex-1 text-4xl font-bold tracking-tight flex items-center gap-3">
               {page.icon && <span className="text-4xl">{page.icon}</span>}
               {displayTitle}
             </h1>
-            {page.description && (
-              <p className="text-muted-foreground mt-2 text-base leading-relaxed">{displayDescription}</p>
-            )}
-          </div>
-          {isOwner && (
-            <div className="flex items-center gap-0.5 shrink-0 mt-1">
-              <Button variant="ghost" className="h-8 rounded-lg px-1" onClick={onEdit}>
+            {isOwner && (
+              <Button variant="ghost" className="h-8 rounded-lg px-2 shrink-0" onClick={onEdit}>
                 <Edit size={15} />
                 {t('wiki.sidebar.edit')}
               </Button>
-            </div>
+            )}
+          </div>
+          {page.description && (
+            <p className="text-muted-foreground mt-2 text-base leading-relaxed">{displayDescription}</p>
           )}
         </div>
       )}

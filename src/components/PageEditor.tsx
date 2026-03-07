@@ -66,7 +66,8 @@ export const PageEditor = ({
   const [title, setTitle] = useState(page?.title || '');
   const [description, setDescription] = useState(page?.description || '');
   const [icon, setIcon] = useState(page?.icon || '');
-  const contentRef = useRef(page?.content || '');
+  const [initialContent] = useState(page?.content || '');
+  const contentRef = useRef(initialContent);
   const [parentId, setParentId] = useState<string | null>(page?.parent_id ?? initialParentId ?? null);
   const [skillLevelType, setSkillLevelType] = useState<string>(page?.skill_level_type || '');
   const [minSkillLevel, setMinSkillLevel] = useState<string>(page?.min_skill_level || '');
@@ -88,7 +89,7 @@ export const PageEditor = ({
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-6">
+    <div className="flex flex-col h-full overflow-y-auto p-2 pb-4">
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">
           {page ? t('wiki.editor.editPage') : t('wiki.editor.newPage')}
@@ -96,19 +97,37 @@ export const PageEditor = ({
       </div>
 
       <div className="space-y-5 mb-6">
-        <div className="flex gap-3 mr-12">
+        <div className="flex gap-3 sm:mr-12">
           <div className="w-24">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {t('wiki.editor.icon')}
             </Label>
             <Select value={icon || '📄'} onValueChange={setIcon}>
-              <SelectTrigger className="text-center text-xl h-12 mt-1.5">
+              <SelectTrigger className="text-center mt-1.5">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="max-h-60">
                 {[
-                  '📄', '📚', '📖', '📝', '✏️', '🔬', '🧪', '🧠', '💡', '🎓',
-                  '🌍', '📊', '📈', '🔧', '⚙️', '🎨', '🎵', '📐', '🔑', '⭐',
+                  '📄',
+                  '📚',
+                  '📖',
+                  '📝',
+                  '✏️',
+                  '🔬',
+                  '🧪',
+                  '🧠',
+                  '💡',
+                  '🎓',
+                  '🌍',
+                  '📊',
+                  '📈',
+                  '🔧',
+                  '⚙️',
+                  '🎨',
+                  '🎵',
+                  '📐',
+                  '🔑',
+                  '⭐',
                 ].map((emoji) => (
                   <SelectItem key={emoji} value={emoji} className="text-xl text-center">
                     {emoji}
@@ -126,12 +145,12 @@ export const PageEditor = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('wiki.page.titlePlaceholder')}
-              className="text-lg h-12 mt-1.5 font-medium"
+              className="mt-1.5 font-medium"
             />
           </div>
         </div>
 
-        <div className="mr-12">
+        <div className="sm:mr-12">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {t('wiki.editor.description')}
           </Label>
@@ -143,27 +162,27 @@ export const PageEditor = ({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {t('wiki.editor.parentPage')}
-            </Label>
-            <Select value={parentId || '__root__'} onValueChange={(v) => setParentId(v === '__root__' ? null : v)}>
-              <SelectTrigger className="mt-1.5">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
-                {orderedParents.map(({ page: p, depth }) => (
-                  <SelectItem key={p.id} value={p.id} style={{ paddingLeft: `${32 + depth * 16}px` }}>
-                    {p.icon && `${p.icon} `}
-                    {p.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div>
+          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            {t('wiki.editor.parentPage')}
+          </Label>
+          <Select value={parentId || '__root__'} onValueChange={(v) => setParentId(v === '__root__' ? null : v)}>
+            <SelectTrigger className="mt-1.5">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
+              {orderedParents.map(({ page: p, depth }) => (
+                <SelectItem key={p.id} value={p.id} style={{ paddingLeft: `${32 + depth * 16}px` }}>
+                  {p.icon && `${p.icon} `}
+                  {p.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {t('wiki.editor.skillLevelType')}
@@ -188,10 +207,8 @@ export const PageEditor = ({
               </SelectContent>
             </Select>
           </div>
-        </div>
 
-        {skillLevelType && (
-          <div className="grid grid-cols-2 gap-4">
+          {skillLevelType && (
             <div>
               <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {t('wiki.editor.minSkillLevel')}
@@ -213,15 +230,15 @@ export const PageEditor = ({
                 </SelectContent>
               </Select>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="flex-1 min-h-[300px] mb-6">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
             {t('wiki.editor.content')}
           </Label>
           <MarkdownEditor
-            content={contentRef.current}
+            content={initialContent}
             editable={true}
             onUpdate={(val) => {
               contentRef.current = val;
