@@ -60,6 +60,17 @@ export const pages: DbTableDefinition = {
       type: 'text',
       description: 'Label that makes this page triggerable by the study plan',
       nullable: true,
+      deprecated: true,
+    },
+    min_skill_level: {
+      type: 'text',
+      description: 'Minimum CEFR skill level required to see this page (e.g. A2, B1). Null means no restriction.',
+      nullable: true,
+    },
+    skill_level_type: {
+      type: 'text',
+      description: 'Which skill category the min_skill_level applies to: reading, writing, grammar, speaking, listening, or understanding.',
+      nullable: true,
     },
   },
 };

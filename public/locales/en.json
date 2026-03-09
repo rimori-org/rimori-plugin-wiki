@@ -6,7 +6,7 @@
       "public": "Public"
     },
     "sidebar": {
-      "edit": "Edit page",
+      "edit": "Edit",
       "addSubpage": "Add subpage",
       "selectPage": "Select a page..."
     },
@@ -43,9 +43,16 @@
       "description": "Description",
       "content": "Content",
       "parentPage": "Parent page",
-      "actionLabel": "Action label",
-      "actionLabelPlaceholder": "e.g. grammar-basics",
-      "actionLabelHint": "Set a label to make this page triggerable by the study plan",
+      "skillLevelType": "Skill Category",
+      "skillLevelTypeNone": "No filter",
+      "minSkillLevel": "Minimum Level",
+      "minSkillLevelNone": "No minimum",
+      "skill_reading": "Reading",
+      "skill_writing": "Writing",
+      "skill_grammar": "Grammar",
+      "skill_speaking": "Speaking",
+      "skill_listening": "Listening",
+      "skill_understanding": "Understanding",
       "appendMarkdown": "Append markdown",
       "appendMarkdownTitle": "Append Markdown",
       "appendMarkdownDescription": "Paste or type markdown content to append to the editor.",

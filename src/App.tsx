@@ -9,7 +9,6 @@ import { lazy } from 'react';
 const queryClient = new QueryClient();
 
 const WikiPage = lazy(() => import('./pages/wiki/WikiPage'));
-const BrowseSidebar = lazy(() => import('./pages/sidebar/BrowseSidebar'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFound'));
 
@@ -26,7 +25,6 @@ const App = () => (
               <Route path="/wiki/action" element={<WikiPage />} />
               <Route path="/wiki/:pageId" element={<WikiPage />} />
               <Route path="/wiki/:pageId/edit" element={<WikiPage />} />
-              <Route path="/sidebar/browse" element={<BrowseSidebar />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
