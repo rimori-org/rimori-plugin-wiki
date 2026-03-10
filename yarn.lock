@@ -116,7 +116,7 @@
   dependencies:
     "@babel/types" "^7.29.0"
 
-"@babel/runtime@^7.28.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.28.6", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
   version "7.28.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.6.tgz#d267a43cb1836dc4d182cce93ae75ba954ef6d2b"
   integrity sha512-05WQkdpL9COIMz4LjTxGpPNCdlpyimKppYNoJ5Di5EUObifl8t4tuLuUBBZEpoLYOmfvIWrsp9fCl0HoPRVTdA==
@@ -1091,19 +1091,19 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.21":
-  version "2.5.21"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.21.tgz#a859480cd991e92db856da48b7a3031031280fb8"
-  integrity sha512-fRyupBgzP98caa213lx9TitC4lGnWPyLW83xQSzm6tRYyLkr4L5SgR+Kj53BQVSOc2FC2GBN/A1uh47cycie0w==
+"@rimori/client@^2.5.22":
+  version "2.5.22"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.22.tgz#c8b76d6be28ce82b09f805590322a16fdccdaaca"
+  integrity sha512-ECglJggCpDlDQsPDQVcYIKZzrsfU0DPAzmG0aPpmbxWyNzN4jBL5l7xOR8w8vBfKiNLzydOS/OfJ7d4AIgfcOg==
   dependencies:
     "@supabase/postgrest-js" "^2.98.0"
     dotenv "^16.5.0"
-    i18next "^25.8.14"
+    i18next "^25.8.15"
 
-"@rimori/playwright-testing@^0.3.15":
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.15.tgz#a2c0530d1df5d4bf701c1e4fa563b33d917e97b7"
-  integrity sha512-m3lA3+8YfhsItWZ0bGIa6Gk3suenG3ikOipJEMNR5YOkF5ZjUVhtRGID2G2neI3XraX9V8SirvRpC3pkO9+4CA==
+"@rimori/playwright-testing@^0.3.16":
+  version "0.3.16"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.16.tgz#4db7c52d1704a7191aed390925f60e5446d73992"
+  integrity sha512-jgPRK2c9DPqs0BF4tEhgTUaOWDJPy7RvQjXFXEmtTr3+F4rLoNJwsXWqsflWHEI8BlRO1y/Z3/u1D7ksrXRZ8w==
   dependencies:
     dotenv "^16.4.5"
 
@@ -2530,12 +2530,12 @@ html2canvas@1.4.1:
     css-line-break "^2.1.0"
     text-segmentation "^1.0.3"
 
-i18next@^25.8.14:
-  version "25.8.14"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.8.14.tgz#5c3fcbb31014597e01d98a86250803cef836f9a7"
-  integrity sha512-paMUYkfWJMsWPeE/Hejcw+XLhHrQPehem+4wMo+uELnvIwvCG019L9sAIljwjCmEMtFQQO3YeitJY8Kctei3iA==
+i18next@^25.8.15:
+  version "25.8.17"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-25.8.17.tgz#c4ad0f57aad86bdce096905b1827818b00ed458f"
+  integrity sha512-vWtCttyn5bpOK4hWbRAe1ZXkA+Yzcn2OcACT+WJavtfGMcxzkfvXTLMeOU8MUhRmAySKjU4VVuKlo0sSGeBokA==
   dependencies:
-    "@babel/runtime" "^7.28.4"
+    "@babel/runtime" "^7.28.6"
 
 ignore@^5.2.0:
   version "5.3.2"
