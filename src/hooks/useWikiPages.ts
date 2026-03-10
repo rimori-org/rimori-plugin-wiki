@@ -54,8 +54,9 @@ export function useWikiPages(mode: 'private' | 'public') {
     setLoading(true);
     let query = plugin.db.from('pages').select('*');
     if (mode === 'private') {
-      // Private pages have guild_id set (scoped to user's personal guild)
-      query = query.not('guild_id', 'is', null);
+      // Private pages belong to the current user's guild only
+      const guildInfo = plugin.plugin.getGuildInfo();
+      query = query.eq('guild_id', guildInfo.id);
     } else {
       // Public pages have guild_id = null (visible to everyone)
       query = query.is('guild_id', null);
