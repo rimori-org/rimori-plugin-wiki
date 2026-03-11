@@ -1091,19 +1091,19 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.22":
-  version "2.5.22"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.22.tgz#c8b76d6be28ce82b09f805590322a16fdccdaaca"
-  integrity sha512-ECglJggCpDlDQsPDQVcYIKZzrsfU0DPAzmG0aPpmbxWyNzN4jBL5l7xOR8w8vBfKiNLzydOS/OfJ7d4AIgfcOg==
+"@rimori/client@^2.5.23":
+  version "2.5.23"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.23.tgz#4c0a10e49ba6bd9feea781912aec3abf640901b3"
+  integrity sha512-YMi6OW7iucbSN5Zl99Dp9Nav7z7ibQ1ppHHm7w9+ChptmvxNYh3gz2K+RS/7Vzy6zz36qQ+lLtP+gIPYlSDI6A==
   dependencies:
     "@supabase/postgrest-js" "^2.98.0"
     dotenv "^16.5.0"
     i18next "^25.8.15"
 
-"@rimori/playwright-testing@^0.3.16":
-  version "0.3.16"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.16.tgz#4db7c52d1704a7191aed390925f60e5446d73992"
-  integrity sha512-jgPRK2c9DPqs0BF4tEhgTUaOWDJPy7RvQjXFXEmtTr3+F4rLoNJwsXWqsflWHEI8BlRO1y/Z3/u1D7ksrXRZ8w==
+"@rimori/playwright-testing@^0.3.17":
+  version "0.3.17"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.17.tgz#1fc2919e4f74094d693b5e389a6218c16743393f"
+  integrity sha512-9Y9B86g9QdU1TtzM47KeFTvMuPawokrvd1LYCNUHuLAB1P0qC5zuiEedwKiixqYlgV9b2SyBtVrKp4yCGe8SIA==
   dependencies:
     dotenv "^16.4.5"
 
