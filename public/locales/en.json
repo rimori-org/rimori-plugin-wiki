@@ -13,10 +13,11 @@
     "tree": {
       "newPage": "New Page",
       "newSubpage": "Add subpage",
-"move": "Move",
+      "move": "Move",
       "delete": "Delete",
       "publish": "Publish",
-      "unpublish": "Unpublish"
+      "unpublish": "Unpublish",
+      "emptyTree": "No pages yet. Create your first page!"
     },
     "page": {
       "save": "Save",
@@ -43,8 +44,9 @@
       "description": "Description",
       "content": "Content",
       "parentPage": "Parent page",
-      "skillLevelType": "Skill Category",
-      "skillLevelTypeNone": "No filter",
+      "skillLevelType": "Skill Category minimum requirement",
+      "skillLevelTypeHint": "Hides this page for users who haven't reached the minimum level of this skill level.",
+      "skillLevelTypeNone": "None",
       "minSkillLevel": "Minimum Level",
       "minSkillLevelNone": "No minimum",
       "skill_reading": "Reading",
