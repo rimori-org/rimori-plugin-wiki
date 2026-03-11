@@ -203,7 +203,14 @@ export default function WikiPage() {
             setEditingPage(null);
             setNewPageParentId(undefined);
           }}
-          onTogglePublish={editingPage ? () => handleTogglePublish() : undefined}
+          onTogglePublish={editingPage ? async () => {
+            const wasPrivate = Boolean(editingPage.guild_id);
+            await handleTogglePublish();
+            setEditing(false);
+            setEditingPage(null);
+            setNewPageParentId(undefined);
+            setMode(wasPrivate ? 'public' : 'private');
+          } : undefined}
           onDelete={editingPage ? () => handleDelete() : undefined}
           isPublic={editingPage ? !editingPage.guild_id : undefined}
         />
@@ -223,10 +230,33 @@ export default function WikiPage() {
         />
       );
     }
+    const rootPages = pages.filter((p) => !p.parent_id);
+    if (rootPages.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
+          <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center text-3xl">📝</div>
+          <p className="text-sm">{t('wiki.page.noPageSelected')}</p>
+        </div>
+      );
+    }
     return (
-      <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
-        <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center text-3xl">📝</div>
-        <p className="text-sm">{t('wiki.page.noPageSelected')}</p>
+      <div className="flex flex-col h-full overflow-y-auto p-3 md:p-6">
+        <h1 className="text-4xl font-bold tracking-tight mb-6">Wiki</h1>
+        <div className="grid gap-2">
+          {rootPages.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => handleSelect(p.id)}
+              className="flex items-start gap-3 text-left px-4 py-3 rounded-lg border border-border hover:bg-accent hover:border-accent transition-colors duration-150"
+            >
+              <span className="text-2xl shrink-0 mt-0.5">{p.icon || '📄'}</span>
+              <div>
+                <div className="font-medium">{p.title}</div>
+                {p.description && <div className="text-sm text-muted-foreground mt-0.5">{p.description}</div>}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     );
   };

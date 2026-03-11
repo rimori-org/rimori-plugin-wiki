@@ -6,7 +6,7 @@ export const pages: DbTableDefinition = {
   description: 'Wiki pages with markdown content organized in a tree structure',
   permissions: {
     user: {
-      read: 'OWN',
+      read: 'LANG',
       insert: 'OWN',
       update: 'OWN',
       delete: 'OWN',
