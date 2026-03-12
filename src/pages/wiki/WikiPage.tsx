@@ -41,14 +41,6 @@ export default function WikiPage() {
   const [newPageParentId, setNewPageParentId] = useState<string | null | undefined>(undefined);
   const [moveDialogPage, setMoveDialogPage] = useState<WikiPageType | null>(null);
   const [moveTargetId, setMoveTargetId] = useState<string | null>(null);
-  const [guildId, setGuildId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const cleanup = plugin.plugin.onRimoriInfoUpdate((info) => {
-      setGuildId(info.guild?.id || null);
-    });
-    return cleanup;
-  }, [plugin.plugin]);
 
   const { pages, tree, toggleExpanded, expandToPage, getBreadcrumb, getPage, getChildren, refetch } =
     useWikiPages(mode);
@@ -165,15 +157,16 @@ export default function WikiPage() {
     async (page?: WikiPageType) => {
       const target = page || selectedPage;
       if (!target) return;
-      const newGuildId = target.guild_id ? null : guildId;
-      const { error } = await plugin.db.from('pages').update({ guild_id: newGuildId }).eq('id', target.id);
+      const isPublished = target.guild_id !== null;
+      const publicity: 'own' | 'guild' = isPublished ? 'own' : 'guild';
+      const { error } = await plugin.db.setPublicity('pages', target.id, publicity);
       if (error) {
         toast({ variant: 'destructive', description: error.message });
         return;
       }
       await refetch();
     },
-    [selectedPage, plugin.db, guildId, refetch, toast],
+    [selectedPage, plugin.db, refetch, toast],
   );
 
   const handleMove = useCallback(async () => {
@@ -203,16 +196,20 @@ export default function WikiPage() {
             setEditingPage(null);
             setNewPageParentId(undefined);
           }}
-          onTogglePublish={editingPage ? async () => {
-            const wasPrivate = Boolean(editingPage.guild_id);
-            await handleTogglePublish();
-            setEditing(false);
-            setEditingPage(null);
-            setNewPageParentId(undefined);
-            setMode(wasPrivate ? 'public' : 'private');
-          } : undefined}
+          onTogglePublish={
+            editingPage
+              ? async () => {
+                  const isCurrentlyPublished = editingPage.guild_id !== null;
+                  await handleTogglePublish();
+                  setEditing(false);
+                  setEditingPage(null);
+                  setNewPageParentId(undefined);
+                  setMode(isCurrentlyPublished ? 'private' : 'public');
+                }
+              : undefined
+          }
           onDelete={editingPage ? () => handleDelete() : undefined}
-          isPublic={editingPage ? !editingPage.guild_id : undefined}
+          isPublic={editingPage ? editingPage.guild_id !== null : undefined}
         />
       );
     }

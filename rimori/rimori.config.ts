@@ -47,6 +47,7 @@ const config: RimoriPluginConfig = {
     ],
     // settings: "#/settings",
   },
+  context_menu_actions:[],
   documentation: {
     overview_path: 'docs/overview.md',
     user_path: 'docs/user/userdocs.md',

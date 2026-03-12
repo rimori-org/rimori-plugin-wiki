@@ -9,7 +9,7 @@ export interface WikiPage {
   guild_id: string | null;
   min_skill_level: string | null;
   skill_level_type: string | null;
-  created_by: string;
+  created_by: string | null;
   created_at: string;
 }
 
