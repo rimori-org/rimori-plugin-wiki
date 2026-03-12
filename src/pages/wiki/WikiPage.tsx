@@ -159,11 +159,7 @@ export default function WikiPage() {
       if (!target) return;
       const isPublished = target.guild_id !== null;
       const publicity: 'own' | 'guild' = isPublished ? 'own' : 'guild';
-      const { error } = await plugin.db.setPublicity('pages', target.id, publicity);
-      if (error) {
-        toast({ variant: 'destructive', description: error.message });
-        return;
-      }
+      await plugin.db.setPublicity('pages', target.id, publicity);
       await refetch();
     },
     [selectedPage, plugin.db, refetch, toast],
