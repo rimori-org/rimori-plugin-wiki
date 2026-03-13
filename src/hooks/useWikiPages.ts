@@ -54,12 +54,12 @@ export function useWikiPages(mode: 'private' | 'public') {
     setLoading(true);
     let query = plugin.db.from('pages').select('*');
     if (mode === 'private') {
-      // Private pages belong to the current user's guild only
+      // Private pages have no guild_id (only the owner can see them)
+      query = query.is('guild_id', null);
+    } else {
+      // Public pages are shared with the guild (guild_id is set)
       const guildInfo = plugin.plugin.getGuildInfo();
       query = query.eq('guild_id', guildInfo.id);
-    } else {
-      // Public pages have guild_id = null (visible to everyone)
-      query = query.is('guild_id', null);
     }
     const { data, error } = await query.order('sort_order', { ascending: true });
     if (!error && data) {

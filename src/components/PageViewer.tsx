@@ -34,7 +34,7 @@ export const PageViewer = ({
   mobileMode = false,
 }: PageViewerProps) => {
   const { t } = useTranslation();
-  const isPrivate = Boolean(page.guild_id);
+  const isPrivate = !page.guild_id;
   const displayTitle = isPrivate ? page.title : t(page.title);
   const displayDescription = page.description && (isPrivate ? page.description : t(page.description));
   const displayContent = isPrivate ? page.content || '' : t(page.content || '');
@@ -102,7 +102,7 @@ export const PageViewer = ({
               <button
                 key={child.id}
                 onClick={() => onNavigate(child.id)}
-                className="flex items-center gap-2.5 text-sm px-3 py-2.5 rounded-lg border border-border hover:bg-accent hover:border-accent transition-colors duration-150 text-left"
+                className="flex items-center gap-2.5 text-sm px-3 py-2.5 rounded-lg border border-gray-600 hover:bg-accent hover:border-accent transition-colors duration-150 text-left"
               >
                 <span className="text-lg">{child.icon || '📄'}</span>
                 <span className="font-medium">{child.title}</span>

@@ -71,7 +71,7 @@ export const CommentsSection = ({ pageId }: CommentsSectionProps) => {
   };
 
   return (
-    <div className="mt-8 pt-6">
+    <div className="mt-8 pt-6 border-t border-gray-700">
       <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-4">
         {t('wiki.comments.title')}
       </h3>
@@ -120,7 +120,7 @@ export const CommentsSection = ({ pageId }: CommentsSectionProps) => {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder={t('wiki.comments.placeholder')}
-          className="flex-1 min-h-[60px] rounded-xl resize-none"
+          className="flex-1 min-h-[60px] rounded-lg resize-none bg-gray-700"
         />
         <Button
           onClick={handleSubmit}

@@ -37,30 +37,12 @@ export const pages: DbTableDefinition = {
       type: 'uuid',
       description: 'Parent page ID for tree hierarchy (null = root page)',
       nullable: true,
-      // foreign_key: {
-      //   references_table: 'pages',
-      //   references_column: 'id',
-      //   on_delete_cascade: true,
-      // },
     },
     sort_order: {
       type: 'integer',
       description: 'Sort order among sibling pages',
       nullable: true,
       default_value: 0,
-    },
-    show_children: {
-      type: 'boolean',
-      description: 'Whether to display a list of child pages below the content',
-      nullable: true,
-      default_value: false,
-      deprecated: true,
-    },
-    action_label: {
-      type: 'text',
-      description: 'Label that makes this page triggerable by the study plan',
-      nullable: true,
-      deprecated: true,
     },
     min_skill_level: {
       type: 'text',
