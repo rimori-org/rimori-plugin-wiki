@@ -16,6 +16,7 @@ interface WikiTreeProps {
   mode: 'private' | 'public';
   onModeChange: (mode: 'private' | 'public') => void;
   currentUserId: string | null;
+  isModerator?: boolean;
 }
 
 function TreeNodeItem({
@@ -30,11 +31,12 @@ function TreeNodeItem({
   onTogglePublish,
   mode,
   currentUserId,
+  isModerator,
 }: WikiTreeProps & { node: TreeNode; depth: number }) {
   const { t } = useTranslation();
   const hasChildren = node.children.length > 0;
   const isSelected = selectedPageId === node.page.id;
-  const isOwner = node.page.created_by === currentUserId;
+  const isOwner = node.page.created_by === currentUserId || (isModerator && mode === 'public');
 
   return (
     <div className="mb-0.5">
@@ -69,9 +71,9 @@ function TreeNodeItem({
             <span className="w-5 text-center shrink-0">{node.page.icon || '📄'}</span>
             <span className="truncate flex-1">{node.page.title}</span>
             {node.page.guild_id ? (
-              <Lock size={11} className="shrink-0 text-muted-foreground/50" />
-            ) : (
               <Globe size={11} className="shrink-0 text-primary/60" />
+            ) : (
+              <Lock size={11} className="shrink-0 text-muted-foreground/50" />
             )}
           </div>
         </ContextMenuTrigger>
@@ -89,13 +91,13 @@ function TreeNodeItem({
               <ContextMenuItem onClick={() => onTogglePublish(node.page)}>
                 {node.page.guild_id ? (
                   <>
-                    <Globe size={14} className="mr-2" />
-                    {t('wiki.tree.publish')}
+                    <Lock size={14} className="mr-2" />
+                    {t('wiki.tree.unpublish')}
                   </>
                 ) : (
                   <>
-                    <Lock size={14} className="mr-2" />
-                    {t('wiki.tree.unpublish')}
+                    <Globe size={14} className="mr-2" />
+                    {t('wiki.tree.publish')}
                   </>
                 )}
               </ContextMenuItem>
@@ -124,6 +126,7 @@ function TreeNodeItem({
             onTogglePublish={onTogglePublish}
             mode={mode}
             currentUserId={currentUserId}
+            isModerator={isModerator}
           />
         ))}
     </div>
@@ -142,6 +145,7 @@ export const WikiTree = ({
   mode,
   onModeChange,
   currentUserId,
+  isModerator,
 }: WikiTreeProps) => {
   const { t } = useTranslation();
 
@@ -180,6 +184,7 @@ export const WikiTree = ({
               onTogglePublish={onTogglePublish}
               mode={mode}
               currentUserId={currentUserId}
+              isModerator={isModerator}
             />
           ))
         )}

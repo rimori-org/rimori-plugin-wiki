@@ -152,7 +152,7 @@ export const PageEditor = ({
 
         <div className="sm:mr-12">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            {t('wiki.editor.description')}
+            {t('wiki.editor.descriptionOptional')}
           </Label>
           <Input
             value={description}

@@ -32,28 +32,24 @@ export default function WikiPage() {
   const plugin = useRimori();
   const { t } = useTranslation();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
+  const rawIsMobile = useIsMobile();
   const isMainPanel = plugin.plugin.applicationMode === 'main';
 
   const [mode, setMode] = useState<'private' | 'public'>('public');
   const [editing, setEditing] = useState(false);
+  const [frozenMobile, setFrozenMobile] = useState<boolean | null>(null);
+  const isMobile = editing && frozenMobile !== null ? frozenMobile : rawIsMobile;
   const [editingPage, setEditingPage] = useState<WikiPageType | null>(null);
   const [newPageParentId, setNewPageParentId] = useState<string | null | undefined>(undefined);
   const [moveDialogPage, setMoveDialogPage] = useState<WikiPageType | null>(null);
   const [moveTargetId, setMoveTargetId] = useState<string | null>(null);
-  const [guildId, setGuildId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const cleanup = plugin.plugin.onRimoriInfoUpdate((info) => {
-      setGuildId(info.guild?.id || null);
-    });
-    return cleanup;
-  }, [plugin.plugin]);
 
   const { pages, tree, toggleExpanded, expandToPage, getBreadcrumb, getPage, getChildren, refetch } =
     useWikiPages(mode);
 
-  const currentUserId = plugin.plugin.getUserInfo().user_id;
+  const userInfo = plugin.plugin.getUserInfo();
+  const currentUserId = userInfo.user_id;
+  const isModerator = userInfo.user_role === 'plugin_moderator' || userInfo.user_role === 'lang_moderator' || userInfo.user_role === 'admin';
   const selectedPage = pageId ? getPage(pageId) : undefined;
 
   useEffect(() => {
@@ -88,19 +84,24 @@ export default function WikiPage() {
     [navigate],
   );
 
-  const handleAddSubpage = useCallback((parentId: string | null) => {
-    setNewPageParentId(parentId);
-    setEditingPage(null);
-    setEditing(true);
-  }, []);
+  const handleAddSubpage = useCallback(
+    (parentId: string | null) => {
+      setNewPageParentId(parentId);
+      setEditingPage(null);
+      setFrozenMobile(rawIsMobile);
+      setEditing(true);
+    },
+    [rawIsMobile],
+  );
 
   const handleEdit = useCallback(() => {
     if (selectedPage) {
       setEditingPage(selectedPage);
       setNewPageParentId(undefined);
+      setFrozenMobile(rawIsMobile);
       setEditing(true);
     }
-  }, [selectedPage]);
+  }, [selectedPage, rawIsMobile]);
 
   const handleSave = useCallback(
     async (data: {
@@ -114,7 +115,7 @@ export default function WikiPage() {
       guild_id?: string;
     }) => {
       const guildInfo = plugin.plugin.getGuildInfo();
-      if (mode === 'private') {
+      if (mode === 'public') {
         data.guild_id = guildInfo.id;
       }
       if (editingPage) {
@@ -126,6 +127,7 @@ export default function WikiPage() {
         setEditing(false);
         setEditingPage(null);
         setNewPageParentId(undefined);
+        setFrozenMobile(null);
         await refetch();
       } else {
         const { data: newPage, error } = await plugin.db.from('pages').insert(data).select('*').single();
@@ -136,6 +138,7 @@ export default function WikiPage() {
         setEditing(false);
         setEditingPage(null);
         setNewPageParentId(undefined);
+        setFrozenMobile(null);
         await refetch();
         if (newPage) {
           navigate(`/wiki/${newPage.id}`);
@@ -156,6 +159,7 @@ export default function WikiPage() {
       }
       if (pageId === target.id) navigate('/wiki');
       setEditing(false);
+      setFrozenMobile(null);
       await refetch();
     },
     [selectedPage, pageId, plugin.db, navigate, refetch, toast],
@@ -165,15 +169,12 @@ export default function WikiPage() {
     async (page?: WikiPageType) => {
       const target = page || selectedPage;
       if (!target) return;
-      const newGuildId = target.guild_id ? null : guildId;
-      const { error } = await plugin.db.from('pages').update({ guild_id: newGuildId }).eq('id', target.id);
-      if (error) {
-        toast({ variant: 'destructive', description: error.message });
-        return;
-      }
+      const isPublished = target.guild_id !== null;
+      const publicity: 'own' | 'guild' = isPublished ? 'own' : 'guild';
+      await plugin.db.setPublicity('pages', target.id, publicity);
       await refetch();
     },
-    [selectedPage, plugin.db, guildId, refetch, toast],
+    [selectedPage, plugin.db, refetch, toast],
   );
 
   const handleMove = useCallback(async () => {
@@ -202,17 +203,19 @@ export default function WikiPage() {
             setEditing(false);
             setEditingPage(null);
             setNewPageParentId(undefined);
+            setFrozenMobile(null);
           }}
-          onTogglePublish={editingPage ? async () => {
-            const wasPrivate = Boolean(editingPage.guild_id);
+          onTogglePublish={async () => {
+            const isCurrentlyPublished = editingPage.guild_id !== null;
             await handleTogglePublish();
             setEditing(false);
             setEditingPage(null);
             setNewPageParentId(undefined);
-            setMode(wasPrivate ? 'public' : 'private');
-          } : undefined}
+            setFrozenMobile(null);
+            setMode(isCurrentlyPublished ? 'private' : 'public');
+          }}
           onDelete={editingPage ? () => handleDelete() : undefined}
-          isPublic={editingPage ? !editingPage.guild_id : undefined}
+          isPublic={editingPage ? editingPage.guild_id !== null : undefined}
         />
       );
     }
@@ -224,7 +227,7 @@ export default function WikiPage() {
           children={getChildren(selectedPage.id)}
           onEdit={handleEdit}
           onNavigate={handleSelect}
-          isOwner={selectedPage.created_by === currentUserId}
+          isOwner={selectedPage.created_by === currentUserId || (isModerator && mode === 'public')}
           showComments={isMainPanel}
           mobileMode={isMobile}
         />
@@ -240,14 +243,15 @@ export default function WikiPage() {
       );
     }
     return (
-      <div className="flex flex-col h-full overflow-y-auto p-3 md:p-6">
+      <div className="flex flex-col h-full overflow-y-auto p-3 md:p-6 md:pr-16">
         <h1 className="text-4xl font-bold tracking-tight mb-6">Wiki</h1>
         <div className="grid gap-2">
           {rootPages.map((p) => (
             <button
               key={p.id}
               onClick={() => handleSelect(p.id)}
-              className="flex items-start gap-3 text-left px-4 py-3 rounded-lg border border-border hover:bg-accent hover:border-accent transition-colors duration-150"
+              className="flex items-start gap-3 text-left px-4 py-3 rounded-lg border border-gray-700
+              bg-gray-700/40 hover:bg-accent hover:border-accent transition-colors duration-150"
             >
               <span className="text-2xl shrink-0 mt-0.5">{p.icon || '📄'}</span>
               <div>
@@ -264,7 +268,7 @@ export default function WikiPage() {
   if (isMobile) {
     const mobileOrderedPages = getPagesInTreeOrder(pages);
     return (
-      <div className="flex flex-col h-screen bg-background">
+      <div className="flex flex-col h-screen">
         <div className="flex flex-col gap-1 px-2 pt-2 pb-1 border-b border-border bg-muted/20 shrink-0">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold">Wiki</h1>
@@ -277,6 +281,7 @@ export default function WikiPage() {
                 onValueChange={(v) => {
                   setMode(v as 'private' | 'public');
                   setEditing(false);
+                  setFrozenMobile(null);
                 }}
               >
                 <TabsList className="h-7">
@@ -346,7 +351,7 @@ export default function WikiPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen">
       <div className="flex flex-1 min-h-0">
         <div className="w-64 border-r border-border bg-muted/20 flex flex-col shrink-0">
           <h1 className="text-4xl font-bold p-2 text-center bg-slate-800">Wiki</h1>
@@ -365,6 +370,7 @@ export default function WikiPage() {
             mode={mode}
             onModeChange={(v) => setMode(v)}
             currentUserId={currentUserId}
+            isModerator={isModerator}
           />
         </div>
 
