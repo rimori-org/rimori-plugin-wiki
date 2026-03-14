@@ -1261,10 +1261,10 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.24":
-  version "2.5.24"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.24.tgz#58f68b1e625cda074f2ae5fc335fa1cd950f5a6d"
-  integrity sha512-gPNtz5e4zzLlMOgfSdbRJk2Z8f+6hRljAoMNQD3cgsQg0oF8zAsmqgMcKR00tyzznnsxlVPpea23mek8DUoX8A==
+"@rimori/client@^2.5.25":
+  version "2.5.25"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.25.tgz#f6db04412bbd56f7c43e1a714e0975859706c9af"
+  integrity sha512-jb8SAmxuA3v5C2h1mg0TqqvFRXxpFnqMEDvpZ92jMnOflRmN9tk54OZbyJ6oyv6CRGBcuPyW05E1w0LNPBga2Q==
   dependencies:
     "@supabase/postgrest-js" "^2.98.0"
     dotenv "^16.5.0"
