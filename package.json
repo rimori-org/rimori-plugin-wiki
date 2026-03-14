@@ -1,7 +1,7 @@
 {
   "name": "rimori-plugin-wiki",
   "private": true,
-  "version": "0.0.10",
+  "version": "0.0.11",
   "r_id": "pl1410555270",
   "type": "module",
   "scripts": {
@@ -52,7 +52,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@rimori/client": "^2.5.24",
-    "@rimori/react-client": "^0.4.13",
+    "@rimori/react-client": "^0.4.14",
     "@tanstack/react-query": "^5.56.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

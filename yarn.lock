@@ -1277,10 +1277,10 @@
   dependencies:
     dotenv "^16.4.5"
 
-"@rimori/react-client@^0.4.13":
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.13.tgz#78a639bbcee774657afeff5c11b72f883bc5cba8"
-  integrity sha512-H6QPYQ5YJu/xsDXKUjchdvS2qmCp1/xLq1qJFt8TzslFFUfbn9TW09MbdANfV7K4YvP516lTEWHhskGLd50cFQ==
+"@rimori/react-client@^0.4.14":
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.14.tgz#406f8da82170dd0ea88cbabf33c63b312a0fd92a"
+  integrity sha512-+C27wVXCurkEUDBsgMzMT7+VI/0Ob34hBUYUZS6e6tD9whOEjWWEqBBjf2qLbUbEJEtJZVSHZd45JnXD+hHnVA==
   dependencies:
     "@tiptap/core" "^2.26.1"
     "@tiptap/extension-image" "^2.26.1"
