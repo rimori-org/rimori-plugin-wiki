@@ -13,10 +13,14 @@ interface WikiTreeProps {
   onDelete: (page: WikiPage) => void;
   onMove: (page: WikiPage) => void;
   onTogglePublish: (page: WikiPage) => void;
+  onPublishForAll?: (page: WikiPage) => void;
+  onUnpublishForAll?: (page: WikiPage) => void;
+  getPublicityLevel: (page: WikiPage) => 'own' | 'guild' | 'lang';
   mode: 'private' | 'public';
   onModeChange: (mode: 'private' | 'public') => void;
   currentUserId: string | null;
   isModerator?: boolean;
+  isShadowGuild?: boolean;
 }
 
 function TreeNodeItem({
@@ -29,14 +33,19 @@ function TreeNodeItem({
   onDelete,
   onMove,
   onTogglePublish,
+  onPublishForAll,
+  onUnpublishForAll,
+  getPublicityLevel,
   mode,
   currentUserId,
   isModerator,
+  isShadowGuild,
 }: WikiTreeProps & { node: TreeNode; depth: number }) {
   const { t } = useTranslation();
   const hasChildren = node.children.length > 0;
   const isSelected = selectedPageId === node.page.id;
   const isOwner = node.page.created_by === currentUserId || (isModerator && mode === 'public');
+  const publicityLevel = getPublicityLevel(node.page);
 
   return (
     <div className="mb-0.5">
@@ -70,7 +79,9 @@ function TreeNodeItem({
             </button>
             <span className="w-5 text-center shrink-0">{node.page.icon || '📄'}</span>
             <span className="truncate flex-1">{node.page.title}</span>
-            {node.page.guild_id ? (
+            {publicityLevel === 'lang' ? (
+              <Globe size={11} className="shrink-0 text-green-500/70" />
+            ) : publicityLevel === 'guild' ? (
               <Globe size={11} className="shrink-0 text-primary/60" />
             ) : (
               <Lock size={11} className="shrink-0 text-muted-foreground/50" />
@@ -88,19 +99,33 @@ function TreeNodeItem({
                 <ArrowRight size={14} className="mr-2" />
                 {t('wiki.tree.move')}
               </ContextMenuItem>
-              <ContextMenuItem onClick={() => onTogglePublish(node.page)}>
-                {node.page.guild_id ? (
-                  <>
-                    <Lock size={14} className="mr-2" />
-                    {t('wiki.tree.unpublish')}
-                  </>
-                ) : (
-                  <>
-                    <Globe size={14} className="mr-2" />
-                    {t('wiki.tree.publish')}
-                  </>
-                )}
-              </ContextMenuItem>
+              {!isShadowGuild && publicityLevel !== 'lang' && (
+                <ContextMenuItem onClick={() => onTogglePublish(node.page)}>
+                  {publicityLevel === 'guild' ? (
+                    <>
+                      <Lock size={14} className="mr-2" />
+                      {t('wiki.tree.unpublishFromGuild')}
+                    </>
+                  ) : (
+                    <>
+                      <Globe size={14} className="mr-2" />
+                      {t('wiki.tree.publishInGuild')}
+                    </>
+                  )}
+                </ContextMenuItem>
+              )}
+              {onPublishForAll && publicityLevel !== 'lang' && (
+                <ContextMenuItem onClick={() => onPublishForAll(node.page)}>
+                  <Globe size={14} className="mr-2" />
+                  {t('wiki.tree.publishForAll')}
+                </ContextMenuItem>
+              )}
+              {onUnpublishForAll && publicityLevel === 'lang' && (
+                <ContextMenuItem onClick={() => onUnpublishForAll(node.page)}>
+                  <Lock size={14} className="mr-2" />
+                  {t('wiki.tree.unpublishForAll')}
+                </ContextMenuItem>
+              )}
               <ContextMenuItem className="text-red-600" onClick={() => onDelete(node.page)}>
                 <Trash2 size={14} className="mr-2" />
                 {t('wiki.tree.delete')}
@@ -124,9 +149,13 @@ function TreeNodeItem({
             onDelete={onDelete}
             onMove={onMove}
             onTogglePublish={onTogglePublish}
+            onPublishForAll={onPublishForAll}
+            onUnpublishForAll={onUnpublishForAll}
+            getPublicityLevel={getPublicityLevel}
             mode={mode}
             currentUserId={currentUserId}
             isModerator={isModerator}
+            isShadowGuild={isShadowGuild}
           />
         ))}
     </div>
@@ -142,10 +171,14 @@ export const WikiTree = ({
   onDelete,
   onMove,
   onTogglePublish,
+  onPublishForAll,
+  onUnpublishForAll,
+  getPublicityLevel,
   mode,
   onModeChange,
   currentUserId,
   isModerator,
+  isShadowGuild,
 }: WikiTreeProps) => {
   const { t } = useTranslation();
 
@@ -182,9 +215,13 @@ export const WikiTree = ({
               onDelete={onDelete}
               onMove={onMove}
               onTogglePublish={onTogglePublish}
+              onPublishForAll={onPublishForAll}
+              onUnpublishForAll={onUnpublishForAll}
+              getPublicityLevel={getPublicityLevel}
               mode={mode}
               currentUserId={currentUserId}
               isModerator={isModerator}
+              isShadowGuild={isShadowGuild}
             />
           ))
         )}

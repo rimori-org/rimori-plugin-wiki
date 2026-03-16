@@ -49,7 +49,13 @@ export default function WikiPage() {
 
   const userInfo = plugin.plugin.getUserInfo();
   const currentUserId = userInfo.user_id;
-  const isModerator = userInfo.user_role === 'plugin_moderator' || userInfo.user_role === 'lang_moderator' || userInfo.user_role === 'admin';
+  const isModerator =
+    userInfo.user_role === 'plugin_moderator' ||
+    userInfo.user_role === 'lang_moderator' ||
+    userInfo.user_role === 'admin';
+  const isLangMod = userInfo.user_role === 'lang_moderator' || userInfo.user_role === 'admin';
+  const guildInfo = plugin.plugin.getGuildInfo();
+  const isShadowGuild = guildInfo.isShadowGuild;
   const selectedPage = pageId ? getPage(pageId) : undefined;
 
   useEffect(() => {
@@ -165,16 +171,42 @@ export default function WikiPage() {
     [selectedPage, pageId, plugin.db, navigate, refetch, toast],
   );
 
+  const getPublicityLevel = useCallback((page: WikiPageType): 'own' | 'guild' | 'lang' => {
+    if (page.guild_id !== null) return 'guild';
+    if (page.created_by === null) return 'lang';
+    return 'own';
+  }, []);
+
   const handleTogglePublish = useCallback(
     async (page?: WikiPageType) => {
       const target = page || selectedPage;
       if (!target) return;
-      const isPublished = target.guild_id !== null;
-      const publicity: 'own' | 'guild' = isPublished ? 'own' : 'guild';
+      const currentLevel = getPublicityLevel(target);
+      const publicity: 'own' | 'guild' = currentLevel === 'guild' ? 'own' : 'guild';
       await plugin.db.setPublicity('pages', target.id, publicity);
       await refetch();
     },
-    [selectedPage, plugin.db, refetch, toast],
+    [selectedPage, plugin.db, refetch, toast, getPublicityLevel],
+  );
+
+  const handlePublishForAll = useCallback(
+    async (page?: WikiPageType) => {
+      const target = page || selectedPage;
+      if (!target) return;
+      await plugin.db.setPublicity('pages', target.id, 'lang');
+      await refetch();
+    },
+    [selectedPage, plugin.db, refetch],
+  );
+
+  const handleUnpublishForAll = useCallback(
+    async (page?: WikiPageType) => {
+      const target = page || selectedPage;
+      if (!target) return;
+      await plugin.db.setPublicity('pages', target.id, 'own');
+      await refetch();
+    },
+    [selectedPage, plugin.db, refetch],
   );
 
   const handleMove = useCallback(async () => {
@@ -206,16 +238,41 @@ export default function WikiPage() {
             setFrozenMobile(null);
           }}
           onTogglePublish={async () => {
-            const isCurrentlyPublished = editingPage.guild_id !== null;
+            const currentLevel = getPublicityLevel(editingPage);
             await handleTogglePublish();
             setEditing(false);
             setEditingPage(null);
             setNewPageParentId(undefined);
             setFrozenMobile(null);
-            setMode(isCurrentlyPublished ? 'private' : 'public');
+            setMode(currentLevel === 'guild' ? 'private' : 'public');
           }}
+          onPublishForAll={
+            isLangMod
+              ? async () => {
+                  await handlePublishForAll();
+                  setEditing(false);
+                  setEditingPage(null);
+                  setNewPageParentId(undefined);
+                  setFrozenMobile(null);
+                  setMode('public');
+                }
+              : undefined
+          }
+          onUnpublishForAll={
+            isLangMod
+              ? async () => {
+                  await handleUnpublishForAll();
+                  setEditing(false);
+                  setEditingPage(null);
+                  setNewPageParentId(undefined);
+                  setFrozenMobile(null);
+                  setMode('private');
+                }
+              : undefined
+          }
           onDelete={editingPage ? () => handleDelete() : undefined}
-          isPublic={editingPage ? editingPage.guild_id !== null : undefined}
+          publicityLevel={editingPage ? getPublicityLevel(editingPage) : undefined}
+          isShadowGuild={isShadowGuild}
         />
       );
     }
@@ -367,10 +424,14 @@ export default function WikiPage() {
               setMoveTargetId(page.parent_id);
             }}
             onTogglePublish={(page) => handleTogglePublish(page)}
+            onPublishForAll={isLangMod ? (page) => handlePublishForAll(page) : undefined}
+            onUnpublishForAll={isLangMod ? (page) => handleUnpublishForAll(page) : undefined}
+            getPublicityLevel={getPublicityLevel}
             mode={mode}
             onModeChange={(v) => setMode(v)}
             currentUserId={currentUserId}
             isModerator={isModerator}
+            isShadowGuild={isShadowGuild}
           />
         </div>
 
