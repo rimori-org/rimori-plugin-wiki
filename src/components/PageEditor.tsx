@@ -48,8 +48,11 @@ interface PageEditorProps {
   }) => void;
   onCancel: () => void;
   onTogglePublish?: () => void;
+  onPublishForAll?: () => void;
+  onUnpublishForAll?: () => void;
   onDelete?: () => void;
-  isPublic?: boolean;
+  publicityLevel?: 'own' | 'guild' | 'lang';
+  isShadowGuild?: boolean;
 }
 
 export const PageEditor = ({
@@ -59,8 +62,11 @@ export const PageEditor = ({
   onSave,
   onCancel,
   onTogglePublish,
+  onPublishForAll,
+  onUnpublishForAll,
   onDelete,
-  isPublic,
+  publicityLevel,
+  isShadowGuild,
 }: PageEditorProps) => {
   const { t } = useTranslation();
   const [title, setTitle] = useState(page?.title || '');
@@ -249,12 +255,24 @@ export const PageEditor = ({
       </div>
 
       <div className="flex justify-between items-center shrink-0 gap-3">
-        {page && (onTogglePublish || onDelete) && (
-          <div className="flex gap-2">
-            {onTogglePublish && (
+        {page && (onTogglePublish || onPublishForAll || onUnpublishForAll || onDelete) && (
+          <div className="flex gap-2 flex-wrap">
+            {onTogglePublish && !isShadowGuild && publicityLevel !== 'lang' && (
               <Button variant="outline" onClick={onTogglePublish} className="px-3">
-                {isPublic ? <Lock size={15} /> : <Globe size={15} />}
-                {isPublic ? t('wiki.page.unpublish') : t('wiki.page.publish')}
+                {publicityLevel === 'guild' ? <Lock size={15} /> : <Globe size={15} />}
+                {publicityLevel === 'guild' ? t('wiki.page.unpublishFromGuild') : t('wiki.page.publishInGuild')}
+              </Button>
+            )}
+            {onPublishForAll && publicityLevel !== 'lang' && (
+              <Button variant="outline" onClick={onPublishForAll} className="px-3">
+                <Globe size={15} />
+                {t('wiki.page.publishForAll')}
+              </Button>
+            )}
+            {onUnpublishForAll && publicityLevel === 'lang' && (
+              <Button variant="outline" onClick={onUnpublishForAll} className="px-3">
+                <Lock size={15} />
+                {t('wiki.page.unpublishForAll')}
               </Button>
             )}
             {onDelete && (

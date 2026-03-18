@@ -54,16 +54,19 @@ export function useWikiPages(mode: 'private' | 'public') {
     setLoading(true);
     let query = plugin.db.from('pages').select('*');
     if (mode === 'private') {
-      // Private pages have no guild_id (only the owner can see them)
-      query = query.is('guild_id', null);
-    } else {
-      // Public pages are shared with the guild (guild_id is set)
-      const guildInfo = plugin.plugin.getGuildInfo();
-      query = query.eq('guild_id', guildInfo.id);
+      // Private pages: no guild_id AND owned by the current user (excludes lang-level pages)
+      const userId = plugin.plugin.getUserInfo().user_id;
+      query = query.is('guild_id', null).eq('created_by', userId);
     }
     const { data, error } = await query.order('sort_order', { ascending: true });
     if (!error && data) {
       let fetchedPages = data as WikiPage[];
+
+      // Filter public pages: exclude private entries (owned by current user with no guild)
+      if (mode === 'public') {
+        const userId = plugin.plugin.getUserInfo().user_id;
+        fetchedPages = fetchedPages.filter((page) => !(page.guild_id === null && page.created_by === userId));
+      }
 
       // Filter public pages by skill level requirement
       if (mode === 'public') {
