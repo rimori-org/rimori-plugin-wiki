@@ -54,6 +54,12 @@ export const pages: DbTableDefinition = {
       description: 'Which skill category the min_skill_level applies to: reading, writing, grammar, speaking, listening, or understanding.',
       nullable: true,
     },
+    embedding: {
+      type: 'vector',
+      description: 'Vector embedding for semantic search over wiki pages',
+      nullable: true,
+      source_column: 'content',
+    },
   },
 };
 
