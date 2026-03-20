@@ -53,7 +53,6 @@ export default function WikiPage() {
     userInfo.user_role === 'plugin_moderator' ||
     userInfo.user_role === 'lang_moderator' ||
     userInfo.user_role === 'admin';
-  const isLangMod = userInfo.user_role === 'lang_moderator' || userInfo.user_role === 'admin';
   const guildInfo = plugin.plugin.getGuildInfo();
   const isShadowGuild = guildInfo.isShadowGuild;
   const selectedPage = pageId ? getPage(pageId) : undefined;
@@ -62,7 +61,7 @@ export default function WikiPage() {
     if (pageId) expandToPage(pageId);
   }, [pageId, expandToPage]);
 
-  // Listen for action triggers
+  // Listen for main panel action triggers
   useEffect(() => {
     const listener = plugin.event.onMainPanelAction(async ({ page_id, achievement_topic }) => {
       if (page_id) {
@@ -81,6 +80,19 @@ export default function WikiPage() {
     }, 'wiki_page');
     return () => listener.off();
   }, [plugin.event, navigate]);
+
+  // Listen for sidebar action triggers (e.g. from grammar assistant "View in Wiki")
+  useEffect(() => {
+    const listener = plugin.event.onSidePanelAction((data) => {
+      const targetPageId = (data.args?.page_id as string) || data.text;
+      if (targetPageId) {
+        setMode('private');
+        navigate(`/wiki/${targetPageId}`);
+        refetch();
+      }
+    }, 'browse');
+    return () => listener.off();
+  }, [plugin.event, navigate, refetch]);
 
   const handleSelect = useCallback(
     (id: string) => {
@@ -247,7 +259,7 @@ export default function WikiPage() {
             setMode(currentLevel === 'guild' ? 'private' : 'public');
           }}
           onPublishForAll={
-            isLangMod
+            isModerator
               ? async () => {
                   await handlePublishForAll();
                   setEditing(false);
@@ -259,7 +271,7 @@ export default function WikiPage() {
               : undefined
           }
           onUnpublishForAll={
-            isLangMod
+            isModerator
               ? async () => {
                   await handleUnpublishForAll();
                   setEditing(false);
@@ -273,6 +285,7 @@ export default function WikiPage() {
           onDelete={editingPage ? () => handleDelete() : undefined}
           publicityLevel={editingPage ? getPublicityLevel(editingPage) : undefined}
           isShadowGuild={isShadowGuild}
+          isModerator={isModerator}
         />
       );
     }
@@ -424,8 +437,8 @@ export default function WikiPage() {
               setMoveTargetId(page.parent_id);
             }}
             onTogglePublish={(page) => handleTogglePublish(page)}
-            onPublishForAll={isLangMod ? (page) => handlePublishForAll(page) : undefined}
-            onUnpublishForAll={isLangMod ? (page) => handleUnpublishForAll(page) : undefined}
+            onPublishForAll={isModerator ? (page) => handlePublishForAll(page) : undefined}
+            onUnpublishForAll={isModerator ? (page) => handleUnpublishForAll(page) : undefined}
             getPublicityLevel={getPublicityLevel}
             mode={mode}
             onModeChange={(v) => setMode(v)}

@@ -11,6 +11,18 @@ export const pages: DbTableDefinition = {
       update: 'OWN',
       delete: 'OWN',
     },
+    guild_moderator: {
+      read: 'LANG',
+      insert: 'OWN',
+      update: 'LANG',
+      delete: 'LANG',
+    },
+   lang_moderator: {
+      read: 'LANG',
+      insert: 'OWN',
+      update: 'LANG',
+      delete: 'LANG',
+    },
   },
   columns: {
     title: {
