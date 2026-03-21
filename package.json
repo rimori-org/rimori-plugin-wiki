@@ -5,7 +5,7 @@
   "r_id": "pl1410555270",
   "type": "module",
   "scripts": {
-    "dev": "git pull && vite --port 3012",
+    "dev": "vite --port 3012",
     "dev:worker": "VITE_MINIFY=false vite build --watch --config worker/vite.config.ts",
     "build": "yarn run check && vite build",
     "build:worker": "vite build --config worker/vite.config.ts",
