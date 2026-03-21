@@ -11,6 +11,18 @@ export const pages: DbTableDefinition = {
       update: 'OWN',
       delete: 'OWN',
     },
+    guild_moderator: {
+      read: 'LANG',
+      insert: 'OWN',
+      update: 'LANG',
+      delete: 'LANG',
+    },
+   lang_moderator: {
+      read: 'LANG',
+      insert: 'OWN',
+      update: 'LANG',
+      delete: 'LANG',
+    },
   },
   columns: {
     title: {
@@ -53,6 +65,12 @@ export const pages: DbTableDefinition = {
       type: 'text',
       description: 'Which skill category the min_skill_level applies to: reading, writing, grammar, speaking, listening, or understanding.',
       nullable: true,
+    },
+    embedding: {
+      type: 'vector',
+      description: 'Vector embedding for semantic search over wiki pages',
+      nullable: true,
+      source_column: 'content',
     },
   },
 };

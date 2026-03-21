@@ -57,16 +57,14 @@ export function useWikiPages(mode: 'private' | 'public') {
       // Private pages: no guild_id AND owned by the current user (excludes lang-level pages)
       const userId = plugin.plugin.getUserInfo().user_id;
       query = query.is('guild_id', null).eq('created_by', userId);
+    } else {
+      // Public pages: guild entries OR language-wide entries (created_by is null) OR own private entries excluded
+      // guild_id is not null (guild entries) OR created_by is null (lang-wide entries)
+      query = query.or('guild_id.not.is.null,created_by.is.null');
     }
     const { data, error } = await query.order('sort_order', { ascending: true });
     if (!error && data) {
       let fetchedPages = data as WikiPage[];
-
-      // Filter public pages: exclude private entries (owned by current user with no guild)
-      if (mode === 'public') {
-        const userId = plugin.plugin.getUserInfo().user_id;
-        fetchedPages = fetchedPages.filter((page) => !(page.guild_id === null && page.created_by === userId));
-      }
 
       // Filter public pages by skill level requirement
       if (mode === 'public') {

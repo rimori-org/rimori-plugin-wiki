@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Globe, Lock, Trash2 } from 'lucide-react';
+import { Globe, Lock, Trash2, Users } from 'lucide-react';
 
 const LANGUAGE_LEVELS = ['Pre-A1', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Post-C2'] as const;
 const SKILL_TYPES = ['reading', 'writing', 'grammar', 'speaking', 'listening', 'understanding'] as const;
@@ -53,6 +53,7 @@ interface PageEditorProps {
   onDelete?: () => void;
   publicityLevel?: 'own' | 'guild' | 'lang';
   isShadowGuild?: boolean;
+  isModerator?: boolean;
 }
 
 export const PageEditor = ({
@@ -67,6 +68,7 @@ export const PageEditor = ({
   onDelete,
   publicityLevel,
   isShadowGuild,
+  isModerator,
 }: PageEditorProps) => {
   const { t } = useTranslation();
   const [title, setTitle] = useState(page?.title || '');
@@ -96,10 +98,34 @@ export const PageEditor = ({
 
   return (
     <div className="flex flex-col h-full overflow-y-auto p-2 pb-4">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-3">
         <h2 className="text-2xl font-bold tracking-tight">
           {page ? t('wiki.editor.editPage') : t('wiki.editor.newPage')}
         </h2>
+        {page && publicityLevel && (
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+              publicityLevel === 'lang'
+                ? 'bg-green-500/15 text-green-600 dark:text-green-400'
+                : publicityLevel === 'guild'
+                  ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
+                  : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {publicityLevel === 'lang' ? (
+              <Globe size={12} />
+            ) : publicityLevel === 'guild' ? (
+              <Users size={12} />
+            ) : (
+              <Lock size={12} />
+            )}
+            {publicityLevel === 'lang'
+              ? t('wiki.editor.publicityPublic')
+              : publicityLevel === 'guild'
+                ? t('wiki.editor.publicityGuild')
+                : t('wiki.editor.publicityPrivate')}
+          </span>
+        )}
       </div>
 
       <div className="space-y-5 mb-6">
@@ -257,9 +283,9 @@ export const PageEditor = ({
       <div className="flex justify-between items-center shrink-0 gap-3">
         {page && (onTogglePublish || onPublishForAll || onUnpublishForAll || onDelete) && (
           <div className="flex gap-2 flex-wrap">
-            {onTogglePublish && !isShadowGuild && publicityLevel !== 'lang' && (
+            {onTogglePublish && (!isShadowGuild || isModerator) && (
               <Button variant="outline" onClick={onTogglePublish} className="px-3">
-                {publicityLevel === 'guild' ? <Lock size={15} /> : <Globe size={15} />}
+                {publicityLevel === 'guild' ? <Lock size={15} /> : <Users size={15} />}
                 {publicityLevel === 'guild' ? t('wiki.page.unpublishFromGuild') : t('wiki.page.publishInGuild')}
               </Button>
             )}
