@@ -1261,26 +1261,26 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.23.2.tgz#156c4b481c0bee22a19f7924728a67120de06971"
   integrity sha512-Ic6m2U/rMjTkhERIa/0ZtXJP17QUi2CbWE7cqx4J58M8aA3QTfW+2UlQ4psvTX9IO1RfNVhK3pcpdjej7L+t2w==
 
-"@rimori/client@^2.5.25":
-  version "2.5.25"
-  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.25.tgz#f6db04412bbd56f7c43e1a714e0975859706c9af"
-  integrity sha512-jb8SAmxuA3v5C2h1mg0TqqvFRXxpFnqMEDvpZ92jMnOflRmN9tk54OZbyJ6oyv6CRGBcuPyW05E1w0LNPBga2Q==
+"@rimori/client@^2.5.27":
+  version "2.5.27"
+  resolved "https://registry.yarnpkg.com/@rimori/client/-/client-2.5.27.tgz#cdfd1f025818cebce033c32057c9f8bc5f88bcb4"
+  integrity sha512-hUFP2UCxSMnQ9RFAyH4Z4oEUMW8LcdaNf6lAJg7UAYztTUF1m1PBubSkokJxC8bFpkTaRX6+24WgJG0f1PWbLA==
   dependencies:
     "@supabase/postgrest-js" "^2.98.0"
     dotenv "^16.5.0"
     i18next "^25.8.15"
 
-"@rimori/playwright-testing@^0.3.17":
-  version "0.3.17"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.17.tgz#1fc2919e4f74094d693b5e389a6218c16743393f"
-  integrity sha512-9Y9B86g9QdU1TtzM47KeFTvMuPawokrvd1LYCNUHuLAB1P0qC5zuiEedwKiixqYlgV9b2SyBtVrKp4yCGe8SIA==
+"@rimori/playwright-testing@^0.3.18":
+  version "0.3.18"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.18.tgz#fde9ea08b0c4139e2fa16cc447216537f1beadc2"
+  integrity sha512-4YWaBFMD4WmBCwMSpwyRqfJhxXLkLSazjdGm+KtqJD/3zH2DzakXRhpzaaec+JKX5o3Z+X0n558Lj4DT8ctTfQ==
   dependencies:
     dotenv "^16.4.5"
 
-"@rimori/react-client@^0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.14.tgz#406f8da82170dd0ea88cbabf33c63b312a0fd92a"
-  integrity sha512-+C27wVXCurkEUDBsgMzMT7+VI/0Ob34hBUYUZS6e6tD9whOEjWWEqBBjf2qLbUbEJEtJZVSHZd45JnXD+hHnVA==
+"@rimori/react-client@^0.4.16":
+  version "0.4.16"
+  resolved "https://registry.yarnpkg.com/@rimori/react-client/-/react-client-0.4.16.tgz#8718a7b92442f8b3ba4e12a80f641840c3775542"
+  integrity sha512-nxHeA5y15rTHoPzfhMvV1gcUb3cGK7/BeaS5KNdYPdOTcOoh0N4uVDth8WwnYMsyYitDXpwMpLHCDpoXtZBTUg==
   dependencies:
     "@tiptap/core" "^2.26.1"
     "@tiptap/extension-image" "^2.26.1"
