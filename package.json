@@ -1,11 +1,11 @@
 {
   "name": "rimori-plugin-wiki",
   "private": true,
-  "version": "0.0.14",
+  "version": "0.0.15",
   "r_id": "pl1410555270",
   "type": "module",
   "scripts": {
-    "dev": "git pull && vite --port 3012",
+    "dev": "vite --port 3012",
     "dev:worker": "VITE_MINIFY=false vite build --watch --config worker/vite.config.ts",
     "build": "yarn run check && vite build",
     "build:worker": "vite build --config worker/vite.config.ts",
@@ -51,8 +51,8 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "@rimori/client": "^2.5.27",
-    "@rimori/react-client": "^0.4.16",
+    "@rimori/client": "^2.5.28",
+    "@rimori/react-client": "^0.4.17",
     "@tanstack/react-query": "^5.56.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -79,7 +79,7 @@
   "devDependencies": {
     "@eslint/js": "^9.37.0",
     "@playwright/test": "^1.40.0",
-    "@rimori/playwright-testing": "^0.3.18",
+    "@rimori/playwright-testing": "^0.3.19",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
