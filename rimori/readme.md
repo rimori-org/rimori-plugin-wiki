@@ -436,7 +436,7 @@ const { llm } = useRimori();
 llm.getText(messages: Message[], tools?: Tool[]): Promise<string>
 
 // Streaming text generation
-llm.getSteamedText(messages: Message[], onMessage: OnLLMResponse, tools?: Tool[]): void
+llm.getStreamedText(messages: Message[], onMessage: OnLLMResponse, tools?: Tool[]): void
 
 // Structured object generation
 llm.getObject(request: ObjectRequest): Promise<any>
