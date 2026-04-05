@@ -20,6 +20,9 @@ export default [
         ...globals.jest,
       },
       sourceType: 'module',
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
