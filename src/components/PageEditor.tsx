@@ -214,56 +214,58 @@ export const PageEditor = ({
           </Select>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {t('wiki.editor.skillLevelType')}
-            </Label>
-            <Select
-              value={skillLevelType || '__none__'}
-              onValueChange={(v) => {
-                setSkillLevelType(v === '__none__' ? '' : v);
-                if (v === '__none__') setMinSkillLevel('');
-              }}
-            >
-              <SelectTrigger className="mt-1.5">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__none__">{t('wiki.editor.skillLevelTypeNone')}</SelectItem>
-                {SKILL_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {t(`wiki.editor.skill_${type}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1.5">{t('wiki.editor.skillLevelTypeHint')}</p>
-          </div>
+        {page && publicityLevel && publicityLevel !== 'own' && (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {t('wiki.editor.skillLevelType')}
+              </Label>
+              <Select
+                value={skillLevelType || '__none__'}
+                onValueChange={(v) => {
+                  setSkillLevelType(v === '__none__' ? '' : v);
+                  if (v === '__none__') setMinSkillLevel('');
+                }}
+              >
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">{t('wiki.editor.skillLevelTypeNone')}</SelectItem>
+                  {SKILL_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`wiki.editor.skill_${type}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1.5">{t('wiki.editor.skillLevelTypeHint')}</p>
+            </div>
 
-          <div>
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {t('wiki.editor.minSkillLevel')}
-            </Label>
-            <Select
-              value={minSkillLevel || '__none__'}
-              onValueChange={(v) => setMinSkillLevel(v === '__none__' ? '' : v)}
-              disabled={!skillLevelType}
-            >
-              <SelectTrigger className="mt-1.5">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__none__">{t('wiki.editor.minSkillLevelNone')}</SelectItem>
-                {LANGUAGE_LEVELS.map((level) => (
-                  <SelectItem key={level} value={level}>
-                    {level}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div>
+              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {t('wiki.editor.minSkillLevel')}
+              </Label>
+              <Select
+                value={minSkillLevel || '__none__'}
+                onValueChange={(v) => setMinSkillLevel(v === '__none__' ? '' : v)}
+                disabled={!skillLevelType}
+              >
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">{t('wiki.editor.minSkillLevelNone')}</SelectItem>
+                  {LANGUAGE_LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex-1 min-h-[300px] mb-6">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">
