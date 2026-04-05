@@ -10,7 +10,7 @@
     "build": "yarn run check && vite build",
     "build:worker": "vite build --config worker/vite.config.ts",
     "build:dev": "vite build --mode development",
-    "lint": "eslint . --quiet",
+    "lint": "npx eslint . --quiet",
     "preview": "vite preview",
     "check": "tsc --project tsconfig.app.json --noEmit --pretty",
     "test": "playwright test",
@@ -77,7 +77,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@eslint/js": "^9.37.0",
     "@playwright/test": "^1.40.0",
     "@rimori/playwright-testing": "^0.3.19",
     "@tailwindcss/typography": "^0.5.15",
@@ -88,9 +87,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react-hooks": "^7.0.0",
-    "eslint-plugin-react-refresh": "^0.4.23",
     "globals": "^16.4.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
