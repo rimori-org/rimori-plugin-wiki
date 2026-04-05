@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "@rimori/playwright-testing": "^0.3.19",
+    "@rimori/playwright-testing": "^0.3.21",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^19.0.0",
