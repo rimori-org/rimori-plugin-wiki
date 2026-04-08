@@ -15,14 +15,14 @@ const config: RimoriPluginConfig = {
         url: '#/wiki',
         name: 'Wiki',
         show: true,
-        root: 'community',
+        root: 'other',
         description: 'Your personal and shared wiki',
       },
       {
         id: '2',
         url: '#/wiki/action',
         show: false,
-        root: 'community',
+        root: 'other',
         name: 'Wiki',
         description: 'Showing a wiki page.',
         action: {
