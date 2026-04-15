@@ -1,7 +1,7 @@
 {
   "name": "rimori-plugin-wiki",
   "private": true,
-  "version": "0.0.19",
+  "version": "0.0.20",
   "r_id": "pl1410555270",
   "type": "module",
   "scripts": {
