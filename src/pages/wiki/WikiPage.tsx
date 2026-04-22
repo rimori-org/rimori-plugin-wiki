@@ -313,7 +313,7 @@ export default function WikiPage() {
       );
     }
     return (
-      <div className="flex flex-col h-full overflow-y-auto p-3 md:p-6 md:pr-16">
+      <div className="flex flex-col min-h-[calc(100vh-48px)] overflow-y-auto @nn:p-3 @md:p-6 @md:pr-16">
         <h1 className="text-4xl font-bold tracking-tight mb-6">Wiki</h1>
         <div className="grid gap-2">
           {rootPages.map((p) => (
@@ -338,7 +338,7 @@ export default function WikiPage() {
   if (isMobile) {
     const mobileOrderedPages = getPagesInTreeOrder(pages);
     return (
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col min-h-[calc(100vh-48px)]">
         <div className="flex flex-col gap-1 px-2 pt-2 pb-1 border-b border-border bg-muted/20 shrink-0">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold">Wiki</h1>
@@ -384,7 +384,7 @@ export default function WikiPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-1 min-h-0 overflow-hidden">{renderContent()}</div>
+        <div className="@container flex-1 min-h-0 overflow-hidden">{renderContent()}</div>
 
         <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
           <DialogContent>
@@ -412,7 +412,12 @@ export default function WikiPage() {
               <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
                 {t('wiki.page.cancel')}
               </Button>
-              <Button onClick={handleMove}>{t('wiki.page.moveConfirm')}</Button>
+              <Button
+                onClick={handleMove}
+                className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+              >
+                {t('wiki.page.moveConfirm')}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -421,9 +426,9 @@ export default function WikiPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex flex-1 min-h-0">
-        <div className="w-64 border-r border-border bg-muted/20 flex flex-col shrink-0">
+    <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="w-64 border-r border-border bg-muted/20 flex flex-col shrink-0 overflow-y-auto">
           <h1 className="text-4xl font-bold p-2 text-center bg-slate-800">Wiki</h1>
           <WikiTree
             tree={tree}
@@ -448,7 +453,7 @@ export default function WikiPage() {
           />
         </div>
 
-        <div className="flex-1 min-w-0">{renderContent()}</div>
+        <div className="@container flex-1 min-w-0 overflow-y-auto">{renderContent()}</div>
       </div>
 
       <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
@@ -477,7 +482,12 @@ export default function WikiPage() {
             <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
               {t('wiki.page.cancel')}
             </Button>
-            <Button onClick={handleMove}>{t('wiki.page.moveConfirm')}</Button>
+            <Button
+              onClick={handleMove}
+              className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+            >
+              {t('wiki.page.moveConfirm')}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

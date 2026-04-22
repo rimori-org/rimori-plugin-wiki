@@ -183,7 +183,7 @@ export const WikiTree = ({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-[calc(100vh-105px)]">
       <Tabs value={mode} onValueChange={(v) => onModeChange(v as 'private' | 'public')}>
         <TabsList className="w-full rounded-none pt-1.5">
           <TabsTrigger value="private" className="flex-1">

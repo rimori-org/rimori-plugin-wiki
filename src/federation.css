@@ -1,0 +1,4 @@
+/* src/federation.css — NO @tailwind base, NO CSS variables */
+@import '@rimori/react-client/dist/style.css';
+@tailwind components;
+@tailwind utilities;

@@ -5,7 +5,7 @@
   "r_id": "pl1410555270",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3012",
+    "dev:standalone": "vite --port 3012",
     "dev:worker": "VITE_MINIFY=false vite build --watch --config worker/vite.config.ts",
     "build": "yarn run check && vite build",
     "build:worker": "vite build --config worker/vite.config.ts",
@@ -77,6 +77,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@module-federation/vite": "^1.14.5",
     "@playwright/test": "^1.40.0",
     "@rimori/playwright-testing": "^0.3.21",
     "@tailwindcss/typography": "^0.5.15",

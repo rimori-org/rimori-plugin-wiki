@@ -97,7 +97,7 @@ export const PageEditor = ({
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-2 pb-4">
+    <div className="flex flex-col min-h-[calc(100vh-48px)] overflow-y-auto p-2 pb-4">
       <div className="mb-6 flex items-center gap-3">
         <h2 className="text-2xl font-bold tracking-tight">
           {page ? t('wiki.editor.editPage') : t('wiki.editor.newPage')}
@@ -129,7 +129,7 @@ export const PageEditor = ({
       </div>
 
       <div className="space-y-5 mb-6">
-        <div className="flex gap-3 sm:mr-12">
+        <div className="flex gap-3 @sm:mr-12">
           <div className="w-24">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {t('wiki.editor.icon')}
@@ -182,7 +182,7 @@ export const PageEditor = ({
           </div>
         </div>
 
-        <div className="sm:mr-12">
+        <div className="@sm:mr-12">
           <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {t('wiki.editor.descriptionOptional')}
           </Label>
@@ -329,7 +329,11 @@ export const PageEditor = ({
           <Button variant="outline" onClick={onCancel} className="px-6">
             {t('wiki.page.cancel')}
           </Button>
-          <Button onClick={() => void handleSave()} disabled={!title.trim()} className="px-6">
+          <Button
+            onClick={() => void handleSave()}
+            disabled={!title.trim()}
+            className="px-6 bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+          >
             {t('wiki.page.save')}
           </Button>
         </div>
