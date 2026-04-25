@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "dev:standalone": "vite --port 3012",
+    "dev:scenario": "VITE_SCENARIO=true vite --port 3012",
     "dev:worker": "VITE_MINIFY=false vite build --watch --config worker/vite.config.ts",
     "build": "yarn run check && vite build",
+    "build:scenario": "VITE_SCENARIO=true vite build",
     "build:worker": "vite build --config worker/vite.config.ts",
     "build:dev": "vite build --mode development",
     "lint": "npx eslint . --quiet",
@@ -77,9 +79,11 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@module-federation/enhanced": "^2.3.3",
     "@module-federation/vite": "^1.14.5",
     "@playwright/test": "^1.40.0",
     "@rimori/playwright-testing": "^0.3.21",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^19.0.0",
@@ -94,6 +98,6 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.46.0",
-    "vite": "^5.4.1"
+    "vite": "^5.4.18"
   }
 }
