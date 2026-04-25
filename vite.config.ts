@@ -4,70 +4,20 @@ import { federation } from '@module-federation/vite';
 import path from 'path';
 import fs from 'fs';
 
+const scenarioImport = process.env.VITE_SCENARIO === 'true';
+const shared = (): { singleton: true; import: boolean } => ({ singleton: true, import: scenarioImport });
+const local = (): { singleton: boolean; import: boolean } => ({ singleton: !scenarioImport, import: scenarioImport });
+
+// https://vitejs.dev/config/
 export default defineConfig(() => ({
   base: './',
-  server: { host: '::', port: 8080 },
+  server: {
+    host: '::',
+    port: 8080,
+  },
   plugins: [
-    react(),
-    federation({
-      name: 'rimori-plugin-wiki',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './MainPanel': './src/federation/MainPanel',
-        './Sidebar': './src/federation/Sidebar',
-        './Settings': './src/federation/Settings',
-      },
-      shared: {
-        react:                           { singleton: true, import: false },
-        'react-dom':                     { singleton: true, import: false },
-        'react/jsx-runtime':             { singleton: true, import: false },
-        'react/jsx-dev-runtime':         { singleton: true, import: false },
-        '@rimori/client':                { singleton: true, import: false },
-        '@rimori/react-client':          { singleton: true, import: false },
-        '@tanstack/react-query':         { singleton: true, import: false },
-        zod:                             { singleton: true, import: false },
-        // react-router-dom intentionally NOT shared: plugin needs its own Router instance
-        // to avoid "nested Router" error when running inside rimori-main via module federation.
-        'react-hook-form':               { singleton: true, import: false },
-        '@hookform/resolvers':           { singleton: true, import: false },
-        clsx:                            { singleton: true, import: false },
-        'tailwind-merge':                { singleton: true, import: false },
-        'class-variance-authority':      { singleton: true, import: false },
-        sonner:                          { singleton: true, import: false },
-        'date-fns':                      { singleton: true, import: false },
-        'react-resizable-panels':        { singleton: true, import: false },
-        cmdk:                            { singleton: true, import: false },
-        'input-otp':                     { singleton: true, import: false },
-        'embla-carousel-react':          { singleton: true, import: false },
-        '@radix-ui/react-accordion':     { singleton: true, import: false },
-        '@radix-ui/react-alert-dialog':  { singleton: true, import: false },
-        '@radix-ui/react-aspect-ratio':  { singleton: true, import: false },
-        '@radix-ui/react-avatar':        { singleton: true, import: false },
-        '@radix-ui/react-checkbox':      { singleton: true, import: false },
-        '@radix-ui/react-collapsible':   { singleton: true, import: false },
-        '@radix-ui/react-context-menu':  { singleton: true, import: false },
-        '@radix-ui/react-dialog':        { singleton: true, import: false },
-        '@radix-ui/react-dropdown-menu': { singleton: true, import: false },
-        '@radix-ui/react-hover-card':    { singleton: true, import: false },
-        '@radix-ui/react-label':         { singleton: true, import: false },
-        '@radix-ui/react-menubar':       { singleton: true, import: false },
-        '@radix-ui/react-navigation-menu': { singleton: true, import: false },
-        '@radix-ui/react-popover':       { singleton: true, import: false },
-        '@radix-ui/react-progress':      { singleton: true, import: false },
-        '@radix-ui/react-radio-group':   { singleton: true, import: false },
-        '@radix-ui/react-scroll-area':   { singleton: true, import: false },
-        '@radix-ui/react-select':        { singleton: true, import: false },
-        '@radix-ui/react-separator':     { singleton: true, import: false },
-        '@radix-ui/react-slider':        { singleton: true, import: false },
-        '@radix-ui/react-slot':          { singleton: true, import: false },
-        '@radix-ui/react-switch':        { singleton: true, import: false },
-        '@radix-ui/react-tabs':          { singleton: true, import: false },
-        '@radix-ui/react-toast':         { singleton: true, import: false },
-        '@radix-ui/react-toggle':        { singleton: true, import: false },
-        '@radix-ui/react-toggle-group':  { singleton: true, import: false },
-        '@radix-ui/react-tooltip':       { singleton: true, import: false },
-      },
-    }),
+    // Must be first: serves built dist/remoteEntry.js before federation plugin's
+    // dev-mode handler can intercept it. Scenario tests load the production bundle.
     {
       name: 'serve-federation-dist',
       configureServer(server) {
@@ -76,23 +26,92 @@ export default defineConfig(() => ({
           let filePath = null;
           if (url === '/remoteEntry.js') {
             filePath = path.resolve(__dirname, 'dist/remoteEntry.js');
+          } else if (url === '/__rimori_dist_index__.html') {
+            filePath = path.resolve(__dirname, 'dist/index.html');
           } else if (url.startsWith('/assets/')) {
             filePath = path.resolve(__dirname, 'dist', url.replace(/^\//, ''));
           }
           if (filePath && fs.existsSync(filePath)) {
-            res.setHeader('Content-Type', 'application/javascript');
+            const ext = path.extname(filePath);
+            const contentType = ext === '.css' ? 'text/css; charset=utf-8'
+              : ext === '.html' ? 'text/html; charset=utf-8'
+              : ext === '.js' || ext === '.mjs' ? 'application/javascript; charset=utf-8'
+              : 'application/octet-stream';
+            res.setHeader('Content-Type', contentType);
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.end(fs.readFileSync(filePath, 'utf-8'));
+            res.end(fs.readFileSync(filePath));
           } else {
             next();
           }
         });
       },
     },
+    react(),
+    federation({
+      name: 'rimori-plugin-wiki',
+      filename: 'remoteEntry.js',
+      dts: false,
+      exposes: {
+        './MainPanel': './src/federation/MainPanel',
+        './Sidebar': './src/federation/Sidebar',
+        './Settings': './src/federation/Settings',
+      },
+      shared: {
+        react: shared(),
+        'react-dom': shared(),
+        'react/jsx-runtime': shared(),
+        'react/jsx-dev-runtime': shared(),
+        '@rimori/client': shared(),
+        '@rimori/react-client': shared(),
+        '@tanstack/react-query': shared(),
+        zod: shared(),
+        // react-router-dom intentionally NOT shared: plugin needs its own Router instance.
+        'react-hook-form': local(),
+        '@hookform/resolvers': local(),
+        clsx: local(),
+        'tailwind-merge': local(),
+        'class-variance-authority': local(),
+        sonner: local(),
+        'date-fns': local(),
+        'react-resizable-panels': local(),
+        cmdk: local(),
+        'input-otp': local(),
+        'embla-carousel-react': local(),
+        '@radix-ui/react-accordion': local(),
+        '@radix-ui/react-alert-dialog': local(),
+        '@radix-ui/react-aspect-ratio': local(),
+        '@radix-ui/react-avatar': local(),
+        '@radix-ui/react-checkbox': local(),
+        '@radix-ui/react-collapsible': local(),
+        '@radix-ui/react-context-menu': local(),
+        '@radix-ui/react-dialog': local(),
+        '@radix-ui/react-dropdown-menu': local(),
+        '@radix-ui/react-hover-card': local(),
+        '@radix-ui/react-label': local(),
+        '@radix-ui/react-menubar': local(),
+        '@radix-ui/react-navigation-menu': local(),
+        '@radix-ui/react-popover': local(),
+        '@radix-ui/react-progress': local(),
+        '@radix-ui/react-radio-group': local(),
+        '@radix-ui/react-scroll-area': local(),
+        '@radix-ui/react-select': local(),
+        '@radix-ui/react-separator': local(),
+        '@radix-ui/react-slider': local(),
+        '@radix-ui/react-slot': local(),
+        '@radix-ui/react-switch': local(),
+        '@radix-ui/react-tabs': local(),
+        '@radix-ui/react-toast': local(),
+        '@radix-ui/react-toggle': local(),
+        '@radix-ui/react-toggle-group': local(),
+        '@radix-ui/react-tooltip': local(),
+      },
+    }),
   ],
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
     dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
   },
-  build: { target: 'esnext' },
+  build: {
+    target: 'esnext',
+  },
 }));
