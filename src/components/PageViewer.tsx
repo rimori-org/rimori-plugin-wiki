@@ -40,7 +40,7 @@ export const PageViewer = ({
   const displayContent = isPrivate ? page.content || '' : t(page.content || '');
 
   return (
-    <div className="relative flex flex-col h-full overflow-y-auto p-2 md:p-3">
+    <div className="relative flex flex-col @nn:p-2 @md:p-3">
       {mobileMode && isOwner && (
         <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-8 w-8 z-10" onClick={onEdit}>
           <Edit size={16} />

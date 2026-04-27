@@ -9,6 +9,7 @@ const config: RimoriPluginConfig = {
     logo: 'logo.png',
   },
   pages: {
+    federated: true,
     main: [
       {
         id: '1',

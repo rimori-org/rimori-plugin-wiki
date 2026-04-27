@@ -27,3 +27,7 @@ dist-ssr
 public/web-worker.js
 playwright-report
 test-results
+
+# Module federation
+.__mf__temp
+.mf
