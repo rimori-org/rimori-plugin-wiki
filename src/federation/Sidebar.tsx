@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { injectFederationCss } from '@rimori/react-client';
 import cssText from '../federation.css?inline';
 
@@ -17,7 +18,12 @@ export default function SidebarFederated({ actionKey }: { actionKey: string }) {
       <TooltipProvider>
         <Suspense fallback={null}>
           <div className="@container">
-            <WikiPage />
+            <MemoryRouter initialEntries={['/wiki']}>
+              <Routes>
+                <Route path="/wiki" element={<WikiPage />} />
+                <Route path="/wiki/:pageId" element={<WikiPage />} />
+              </Routes>
+            </MemoryRouter>
           </div>
         </Suspense>
       </TooltipProvider>
