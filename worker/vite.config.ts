@@ -14,9 +14,7 @@ export default defineConfig({
     outDir: path.resolve(__dirname, '../public'),
     emptyOutDir: false,
     rollupOptions: {
-      // Mark html2canvas as external - it's a DOM-only library that can't run in workers
       // @rimori/react-client provides it for browser contexts
-      external: ['html2canvas'],
       output: {
         inlineDynamicImports: true,
         entryFileNames: 'web-worker.js',
