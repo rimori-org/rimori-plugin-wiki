@@ -66,9 +66,13 @@ export default defineConfig(() => ({
         '@tanstack/react-query': shared(),
         zod: shared(),
         // react-router-dom intentionally NOT shared: plugin needs its own Router instance.
+        // Note: clsx, @radix-ui/react-dialog, @radix-ui/react-collapsible, @radix-ui/react-slot,
+        // and @radix-ui/react-toggle are intentionally NOT shared — they're transitive deps of
+        // already-shared packages and the federation runtime auto-excludes them in dev. Listing
+        // them with import:false here would tell federation to expect them from the host, but
+        // the host won't provide them, causing "Shared module 'X' must be provided by host".
         'react-hook-form': local(),
         '@hookform/resolvers': local(),
-        clsx: local(),
         'tailwind-merge': local(),
         'class-variance-authority': local(),
         sonner: local(),
@@ -82,9 +86,7 @@ export default defineConfig(() => ({
         '@radix-ui/react-aspect-ratio': local(),
         '@radix-ui/react-avatar': local(),
         '@radix-ui/react-checkbox': local(),
-        '@radix-ui/react-collapsible': local(),
         '@radix-ui/react-context-menu': local(),
-        '@radix-ui/react-dialog': local(),
         '@radix-ui/react-dropdown-menu': local(),
         '@radix-ui/react-hover-card': local(),
         '@radix-ui/react-label': local(),
@@ -97,11 +99,9 @@ export default defineConfig(() => ({
         '@radix-ui/react-select': local(),
         '@radix-ui/react-separator': local(),
         '@radix-ui/react-slider': local(),
-        '@radix-ui/react-slot': local(),
         '@radix-ui/react-switch': local(),
         '@radix-ui/react-tabs': local(),
         '@radix-ui/react-toast': local(),
-        '@radix-ui/react-toggle': local(),
         '@radix-ui/react-toggle-group': local(),
         '@radix-ui/react-tooltip': local(),
       },
