@@ -78,12 +78,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev:standalone',
+    command: 'yarn build:scenario && yarn dev:standalone',
     url: 'http://localhost:3012',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes for vite to start
+    timeout: 180 * 1000, // 3 min — build + vite startup
     stdout: 'ignore',
     stderr: 'pipe',
-    cwd: process.cwd(),
   },
 });

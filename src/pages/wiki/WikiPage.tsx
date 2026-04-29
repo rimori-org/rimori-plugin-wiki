@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRimori, useTranslation } from '@rimori/react-client';
 import { WikiTree } from '../../components/WikiTree';
@@ -32,7 +32,8 @@ export default function WikiPage() {
   const plugin = useRimori();
   const { t } = useTranslation();
   const { toast } = useToast();
-  const rawIsMobile = useIsMobile();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rawIsMobile = useIsMobile(containerRef);
   const isMainPanel = plugin.plugin.applicationMode === 'main';
 
   const [mode, setMode] = useState<'private' | 'public'>('public');
@@ -335,72 +336,49 @@ export default function WikiPage() {
     );
   };
 
-  if (isMobile) {
-    const mobileOrderedPages = getPagesInTreeOrder(pages);
-    return (
-      <div className="flex flex-col min-h-[calc(100vh-48px)]">
-        <div className="flex flex-col gap-1 px-2 pt-2 pb-1 border-b border-border bg-muted/20 shrink-0">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Wiki</h1>
-            <div className="flex items-center gap-1 mr-10">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAddSubpage(null)}>
-                <Plus size={15} />
-              </Button>
-              <Tabs
-                value={mode}
-                onValueChange={(v) => {
-                  setMode(v as 'private' | 'public');
-                  setEditing(false);
-                  setFrozenMobile(null);
-                }}
-              >
-                <TabsList className="h-7">
-                  <TabsTrigger value="private" className="gap-1 text-xs px-2 h-5">
-                    <Lock size={10} /> {t('wiki.tabs.private')}
-                  </TabsTrigger>
-                  <TabsTrigger value="public" className="gap-1 text-xs px-2 h-5">
-                    <Globe size={10} /> {t('wiki.tabs.public')}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-          </div>
-          <Select
-            value={pageId || ''}
-            onValueChange={(v) => {
-              if (v) handleSelect(v);
-            }}
-          >
-            <SelectTrigger className="w-full border-0 shadow-none bg-transparent px-0 h-auto text-lg font-semibold focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
-              <SelectValue placeholder={t('wiki.sidebar.selectPage')} />
-            </SelectTrigger>
-            <SelectContent>
-              {mobileOrderedPages.map(({ page, depth }) => (
-                <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
-                  {page.icon && `${page.icon} `}
-                  {page.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="@container flex-1 min-h-0 overflow-hidden">{renderContent()}</div>
+  const mobileOrderedPages = getPagesInTreeOrder(pages);
 
-        <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('wiki.page.moveTo')}</DialogTitle>
-            </DialogHeader>
+  return (
+    <div ref={containerRef}>
+      {isMobile ? (
+        <div className="flex flex-col min-h-[calc(100vh-48px)]">
+          <div className="flex flex-col gap-1 px-2 pt-2 pb-1 border-b border-border bg-muted/20 shrink-0">
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold">Wiki</h1>
+              <div className="flex items-center gap-1 mr-10">
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleAddSubpage(null)}>
+                  <Plus size={15} />
+                </Button>
+                <Tabs
+                  value={mode}
+                  onValueChange={(v) => {
+                    setMode(v as 'private' | 'public');
+                    setEditing(false);
+                    setFrozenMobile(null);
+                  }}
+                >
+                  <TabsList className="h-7">
+                    <TabsTrigger value="private" className="gap-1 text-xs px-2 h-5">
+                      <Lock size={10} /> {t('wiki.tabs.private')}
+                    </TabsTrigger>
+                    <TabsTrigger value="public" className="gap-1 text-xs px-2 h-5">
+                      <Globe size={10} /> {t('wiki.tabs.public')}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+            </div>
             <Select
-              value={moveTargetId || '__root__'}
-              onValueChange={(v) => setMoveTargetId(v === '__root__' ? null : v)}
+              value={pageId || ''}
+              onValueChange={(v) => {
+                if (v) handleSelect(v);
+              }}
             >
-              <SelectTrigger>
-                <SelectValue />
+              <SelectTrigger className="w-full border-0 shadow-none bg-transparent px-0 h-auto text-lg font-semibold focus:ring-0 focus:ring-offset-0 [&>svg]:hidden">
+                <SelectValue placeholder={t('wiki.sidebar.selectPage')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
-                {orderedPages.map(({ page, depth }) => (
+                {mobileOrderedPages.map(({ page, depth }) => (
                   <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
                     {page.icon && `${page.icon} `}
                     {page.title}
@@ -408,89 +386,113 @@ export default function WikiPage() {
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
-                {t('wiki.page.cancel')}
-              </Button>
-              <Button
-                onClick={handleMove}
-                className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
-              >
-                {t('wiki.page.moveConfirm')}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden">
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        <div className="w-64 border-r border-border bg-muted/20 flex flex-col shrink-0 overflow-y-auto">
-          <h1 className="text-4xl font-bold p-2 text-center bg-slate-800">Wiki</h1>
-          <WikiTree
-            tree={tree}
-            selectedPageId={pageId || null}
-            onSelect={handleSelect}
-            onToggle={toggleExpanded}
-            onAddSubpage={handleAddSubpage}
-            onDelete={(page) => handleDelete(page)}
-            onMove={(page) => {
-              setMoveDialogPage(page);
-              setMoveTargetId(page.parent_id);
-            }}
-            onTogglePublish={(page) => handleTogglePublish(page)}
-            onPublishForAll={isModerator ? (page) => handlePublishForAll(page) : undefined}
-            onUnpublishForAll={isModerator ? (page) => handleUnpublishForAll(page) : undefined}
-            getPublicityLevel={getPublicityLevel}
-            mode={mode}
-            onModeChange={(v) => setMode(v)}
-            currentUserId={currentUserId}
-            isModerator={isModerator}
-            isShadowGuild={isShadowGuild}
-          />
-        </div>
-
-        <div className="@container flex-1 min-w-0 overflow-y-auto">{renderContent()}</div>
-      </div>
-
-      <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('wiki.page.moveTo')}</DialogTitle>
-          </DialogHeader>
-          <Select
-            value={moveTargetId || '__root__'}
-            onValueChange={(v) => setMoveTargetId(v === '__root__' ? null : v)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
-              {orderedPages.map(({ page, depth }) => (
-                <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
-                  {page.icon && `${page.icon} `}
-                  {page.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
-              {t('wiki.page.cancel')}
-            </Button>
-            <Button
-              onClick={handleMove}
-              className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
-            >
-              {t('wiki.page.moveConfirm')}
-            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+          <div className="@container flex-1 min-h-0 overflow-hidden">{renderContent()}</div>
+
+          <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('wiki.page.moveTo')}</DialogTitle>
+              </DialogHeader>
+              <Select
+                value={moveTargetId || '__root__'}
+                onValueChange={(v) => setMoveTargetId(v === '__root__' ? null : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
+                  {orderedPages.map(({ page, depth }) => (
+                    <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
+                      {page.icon && `${page.icon} `}
+                      {page.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
+                  {t('wiki.page.cancel')}
+                </Button>
+                <Button
+                  onClick={handleMove}
+                  className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+                >
+                  {t('wiki.page.moveConfirm')}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      ) : (
+        <div className="flex flex-col h-[calc(100vh-48px)] overflow-hidden">
+          <div className="flex flex-1 min-h-0 overflow-hidden">
+            <div className="w-64 border-r border-border bg-muted/20 flex flex-col shrink-0 overflow-y-auto">
+              <h1 className="text-4xl font-bold p-2 text-center bg-slate-800">Wiki</h1>
+              <WikiTree
+                tree={tree}
+                selectedPageId={pageId || null}
+                onSelect={handleSelect}
+                onToggle={toggleExpanded}
+                onAddSubpage={handleAddSubpage}
+                onDelete={(page) => handleDelete(page)}
+                onMove={(page) => {
+                  setMoveDialogPage(page);
+                  setMoveTargetId(page.parent_id);
+                }}
+                onTogglePublish={(page) => handleTogglePublish(page)}
+                onPublishForAll={isModerator ? (page) => handlePublishForAll(page) : undefined}
+                onUnpublishForAll={isModerator ? (page) => handleUnpublishForAll(page) : undefined}
+                getPublicityLevel={getPublicityLevel}
+                mode={mode}
+                onModeChange={(v) => setMode(v)}
+                currentUserId={currentUserId}
+                isModerator={isModerator}
+                isShadowGuild={isShadowGuild}
+              />
+            </div>
+
+            <div className="@container flex-1 min-w-0 overflow-y-auto">{renderContent()}</div>
+          </div>
+
+          <Dialog open={!!moveDialogPage} onOpenChange={(open) => !open && setMoveDialogPage(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('wiki.page.moveTo')}</DialogTitle>
+              </DialogHeader>
+              <Select
+                value={moveTargetId || '__root__'}
+                onValueChange={(v) => setMoveTargetId(v === '__root__' ? null : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__root__">{t('wiki.page.moveToRoot')}</SelectItem>
+                  {orderedPages.map(({ page, depth }) => (
+                    <SelectItem key={page.id} value={page.id} style={{ paddingLeft: `${32 + depth * 12}px` }}>
+                      {page.icon && `${page.icon} `}
+                      {page.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setMoveDialogPage(null)}>
+                  {t('wiki.page.cancel')}
+                </Button>
+                <Button
+                  onClick={handleMove}
+                  className="bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white"
+                >
+                  {t('wiki.page.moveConfirm')}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
     </div>
   );
 }
