@@ -5,8 +5,8 @@ import path from 'path';
 import fs from 'fs';
 
 const scenarioImport = process.env.VITE_SCENARIO === 'true';
-const shared = (): { singleton: true; import: boolean } => ({ singleton: true, import: scenarioImport });
-const local = (): { singleton: boolean; import: boolean } => ({ singleton: !scenarioImport, import: scenarioImport });
+const shared = (): { singleton: true; import: false } => ({ singleton: true, import: false });
+const local = (): { singleton: true; import: false } => ({ singleton: true, import: false });
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
