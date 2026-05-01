@@ -6,7 +6,12 @@ import fs from 'fs';
 
 const scenarioImport = process.env.VITE_SCENARIO === 'true';
 const shared = (): { singleton: true; import: false } => ({ singleton: true, import: false });
-const local = (): { singleton: true; import: false } => ({ singleton: true, import: false });
+// UI-only libs: in scenario mode bundle locally (harness only shares React/@rimori/*);
+// in production rimori-main provides them via its shared scope to dedupe across plugins.
+const local = () =>
+  scenarioImport
+    ? ({ singleton: false } as const)
+    : ({ singleton: true, import: false } as const);
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({

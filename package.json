@@ -82,7 +82,7 @@
     "@module-federation/enhanced": "2.3.3",
     "@module-federation/vite": "1.15.0",
     "@playwright/test": "^1.40.0",
-    "@rimori/playwright-testing": "^0.3.26",
+    "@rimori/playwright-testing": "^0.3.27",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
