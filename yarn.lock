@@ -1437,10 +1437,10 @@
     dotenv "^16.5.0"
     i18next "^25.10.10"
 
-"@rimori/playwright-testing@^0.3.26":
-  version "0.3.26"
-  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.26.tgz#84ccaee9bddc3f4a5fcaf64b7d7fdcb0ef4268ca"
-  integrity sha512-596mKyCF0OGf9VM59RrTQUw/5oJENbatGIvQ9RE/yeUcuyiLnG4hw/5t7XKkddxil4GzJdFayuyNUNk6VzTLmg==
+"@rimori/playwright-testing@^0.3.27":
+  version "0.3.27"
+  resolved "https://registry.yarnpkg.com/@rimori/playwright-testing/-/playwright-testing-0.3.27.tgz#99de4884e58de9a24be82dc946c7321135dbfb74"
+  integrity sha512-owTEmaD/IAypIBavhunH6biLFMNxo59lBUQ7sHeGTtg2NsEusjiQRN4Dq6zKSZjOFCqcJ75yGFwhw73cZg2VCw==
   dependencies:
     dotenv "^16.4.5"
 
